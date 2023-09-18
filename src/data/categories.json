@@ -1,0 +1,50 @@
+{
+    "Hébergement" : [
+        "Loyer",
+        "Télécommunication",
+        "Electricité",
+        "Électrodomestique",
+        "Déplacement professionnel"
+    ],
+    "Aliments" : [
+        "Basique quotidien", 
+        "Évitable(Exterieur)", 
+        "Évitable(Interieur)", 
+        "Restaurant (Plaisir)", 
+        "Bar et Café", 
+        "Déplacement professionnel"
+    ],
+    "Transport" : [
+        "Transport"
+    ],
+    "Loisir" : [
+        "Loisir"
+    ],
+    "Culture" : [
+        "Culture"
+    ],
+    "Voyage" : [
+        "Voyage"
+    ],
+    "Santé" : [
+        "Santé"
+    ],
+    "Vêtements" : [
+        "Vêtements"
+    ],
+    "Cadeaux" : [
+        "Cadeaux"
+    ],
+    "Administration" : [
+        "Administration"
+    ],
+    "Etudes Et Formations" : [
+        "Etudes et Formations"
+    ],
+    "Economies" : [
+        "Economies"
+    ],
+    "Autre" : [
+        "Autre"
+    ]
+}
