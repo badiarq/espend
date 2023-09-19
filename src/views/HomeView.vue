@@ -1,35 +1,41 @@
 <script>
-import allCategories from '../data/categories.json'
-import { ref } from 'vue';
+    import allCategories from '../data/categories.json'
+    import { ref } from 'vue';
 
-export default {
+    export default {
 
-    setup() {
+        setup() {
 
-        let spendCategory = ref(null);
-        let spendSubCategory = ref(null);
+            let spendCategory = ref(null);
+            let spendSubCategory = ref(null);
 
-        return {
-            spendCategory,
-            spendSubCategory,
-            allCategories, 
-        }
-    },
-    methods: {
-        onChangeCategorySelector(event) {
-            let subCategorySelector = document.getElementById("subcategory-selector");
-            subCategorySelector.selectedIndex = 0
+            const date = new Date()
+            // using an existing datetime as `v-model` you must format its dateValue to 'YYYY-MM-DDThh:mm'
+            const formattedDate = date.toISOString().slice(0, 10)  
+            const dateValue = ref(formattedDate)
+
+            return {
+                spendCategory,
+                spendSubCategory,
+                allCategories,
+                dateValue
+            }
         },
-  },
-}
+        methods: {
+            onChangeCategorySelector(event) {
+                let subCategorySelector = document.getElementById("subcategory-selector");
+                subCategorySelector.selectedIndex = 0
+            },
+        },
+    }
 
 </script>
 
 <template>
     <main class="container py-8">
         <form @submit.prevent="newSpend" class="w-full max-w-lg">
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="w-full">
                     <label 
                         for="grid-first-name"
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -44,15 +50,14 @@ export default {
                         @change="onChangeCategorySelector"
                     >
                         <option 
-                            v-for="(category, index) in allCategories"
+                            v-for="(category, index) in allCategories" :key="index"
                             :value="index" 
-                            class="bg-blue-500"
                         >
                             {{ index }}
                         </option>
                     </select>
                 </div>
-                <div class="w-full md:w-1/2 px-3">
+                <div class="w-full">
                     <label 
                         for="grid-first-name"
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -66,14 +71,13 @@ export default {
                         v-model="spendSubCategory"
                     >
                         <option 
-                            v-for= "subCategory in allCategories[spendCategory]"
-                            class="bg-blue-500"
+                            v-for= "(subCategory, index) in allCategories[spendCategory]" :key="index"
                         >
                             {{ subCategory }}
                         </option>
                     </select>
                 </div>
-                <div class="w-full md:w-1/2 px-3">
+                <div class="w-full">
                     <label 
                         for="grid-first-name"
                         class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -88,6 +92,30 @@ export default {
                         >
                         <h4 class="p-2 ml-2 rounded-full w-8">€</h4>
                     </div>
+                </div>
+                <div class="w-full">
+                    <label 
+                        for="grid-first-name"
+                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                        >
+                        Date
+                    </label>
+                    <input 
+                        type="date" 
+                        id="spend-date" 
+                        name="spend-date" 
+                        v-model="dateValue"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-primary-middle rounded py-3 px-4 mb-3 leading-tight"
+                    />
+                </div>
+                <div class="w-full col-span-2">
+                    <label 
+                        for="spend-description"
+                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                        >
+                        Description
+                    </label>
+                    <textarea name="spend-description" id="spend-description" cols="30" rows="3" class="col-span-2"></textarea>
                 </div>
             </div>
         </form>
