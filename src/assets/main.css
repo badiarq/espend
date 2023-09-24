@@ -3,18 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
-body, html, #app, .App, .home {
+/* body, html, #app, .App, .home {
     display: flex;
     flex-direction: column;
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-*, :after, :before {
-    box-sizing: border-box;
-}
-
+} */
 
 [title] {
     position: relative;

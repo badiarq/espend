@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "label": "Hébergement",
+        "subCategories": [
+            { "id": 1, "label": "Loyer" },
+            { "id": 2, "label": "Télécommunication" },
+            { "id": 3, "label": "Electricité" },
+            { "id": 4, "label": "Électrodomestique" },
+            { "id": 5, "label": "Déplacement professionnel" },
+            { "id": 6, "label": "Loyer", "selected": true }
+        ]
+   },
+    {
+        "id": 2,
+        "label": "Aliments",
+        "subCategories": [
+            { "id": 1, "label": "Basique quotidien" },
+            { "id": 2, "label": "Évitable(Exterieur)" },
+            { "id": 3, "label": "Évitable(Interieur)" },
+            { "id": 4, "label": "Restaurant (Plaisir)", "selected": true },
+            { "id": 5, "label": "Bar et Café" },
+            { "id": 6, "label": "Déplacement professionnel" }
+        ]
+    }
+]
