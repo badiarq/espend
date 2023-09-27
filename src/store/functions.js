@@ -6,9 +6,9 @@ export function convertToValidPercentage(percentage) {
 }
 
 export function countDecimals(value) { 
-    if ((value % 1) != 0) 
+    if ((value % 1) != 0) {
         return value.toString().split(".")[1].length;  
-    
+		}
     return 0;
 }
 
@@ -30,4 +30,22 @@ export function roundIfDouble(value){
 export function convertToValidAmount(amount){
     amount = Math.abs(parseFloat(amount).toFixed(2));
     return amount
+}
+
+export function gObjectParameterById(object, parameter, id) {
+    for (const itemId in object) {
+      if (object[itemId].id === id) {
+        return object[itemId][parameter];
+      }
+    }
+    return null;
+}
+
+export function gObjectParameter1ByParameter2(object, parameterName1, parameterName2, parameterValue2) {
+    for (const itemId in object) {
+      if (object[itemId][parameterName2] === parameterValue2) {
+        return object[itemId][parameterName1];
+      }
+    }
+    return null;
 }

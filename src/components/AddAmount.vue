@@ -2,7 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { convertToValidPercentage, convertToValidAmount } from '../store/functions.js'
+import { convertToValidPercentage, 
+    convertToValidAmount, 
+    gObjectParameterById,
+    gObjectParameter1ByParameter2
+} from '../store/functions.js'
 
 const store = useStore()
 
@@ -13,7 +17,6 @@ const loading = ref(true)
 const getCategories = async () => {
     try {
         const response = await axios.get(store.state.api.getCategories);
-        categories.value = response.data
     } catch (e) {
         console.log(e)
     } finally {
@@ -32,9 +35,24 @@ const defaultPercentages = async () => {
     }
 } 
 
+// Get Participants
+const gParticipants = async() => {
+    try {
+        const response = await axios.get(store.state.api.participants)
+        db.value.participants = response.data
+        for (let i = 0; i < response.data.length; i++) {
+            const name = response.data[i].name;
+            form.value.participantsNames.push(name)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 onMounted(async() => {
     await getCategories()
     await defaultPercentages()
+    await gParticipants()
 })
 
 // Global Form
@@ -48,8 +66,12 @@ const form = ref({
     percentagePart2: '',
     amountPart1: 0,
     amountPart2: 0,
-    description: ''
+    description: '',
+    participantsNames: []
 
+})
+const db = ref({
+    participants: {},
 })
 
 function onChangeCategorySelector() {
@@ -73,7 +95,27 @@ const date = new Date()
 const formattedDate = date.toISOString().slice(0, 10) // using an existing datetime as `v-model` you must format its dateValue to 'YYYY-MM-DDThh:mm'
 form.value.dateValue = formattedDate
 
-// 
+// Get participant Name by Id
+// function getNameById(object, parameter, id) {
+
+//     ////loop for an array
+//     // const item = db.value.participants.find(item => item.id === id);
+//     // return item ? item.name : null;
+
+//     for (const itemId in db.value.participants) {
+//       if (db.value.participants[itemId].id === id) {
+//         return db.value.participants[itemId].name;
+//       }
+//     }
+//     return null;
+// }
+
+// Choose the paying participant
+function handleParticipant(value) {
+    console.log(value)
+}
+
+// Assign Parts pecentages
 function handlePartPercentage(percentage, type) {
     if(type === 'part1') {
         const percentageVal1 = +percentage
@@ -90,6 +132,7 @@ function handlePartPercentage(percentage, type) {
     }
 }
 
+// Assign Parts Amounts
 function handlePartAmount(amount, type) {
     if(type === 'part1') {
         form.value.amountPart2 = form.value.spendAmount - amount
@@ -229,12 +272,40 @@ const submitHandler = async () => {
                     class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
                 />
             </div>
+            <div class="col-span-2">
+                <label 
+                    for="participant"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    >
+                    Payé par
+                </label>
+                <select 
+                    id="participant" 
+                    class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
+                    v-model="form.participantsNames"
+                    @change="handleParticipant(form.participantsNames)"
+                >
+                    <!-- <option value="" selected disabled>Selectionnez une catégorie</option> -->
+                    <option 
+                        v-for="participant in db.participants" :key="participant.id"
+                        :value="participant.name" 
+                    >
+                        {{ participant.name }}
+                    </option>
+                </select>
+            </div>
             <div>
                 <label 
                     for="amount-part1"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                     >
-                    Part 1 (%)
+                    Part 1 - 
+                    {{ gObjectParameter1ByParameter2(
+                        db.participants, 
+                        'name', 
+                        'part_reference', 
+                        'Part 1') 
+                    }}
                 </label>
                 <div class="flex flex-row items-center p-2 border rounded bg-secondary-light border-secondary-middle">
                     <div class="flex flex-row items-center w-2/5">
@@ -264,7 +335,13 @@ const submitHandler = async () => {
                     for="amount-part2"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                     >
-                    Part 2 (%)
+                    Part 2 - 
+                    {{ gObjectParameter1ByParameter2(
+                        db.participants, 
+                        'name', 
+                        'part_reference', 
+                        'Part 2') 
+                    }}
                 </label>
                 <div class="flex flex-row items-center p-2 border rounded bg-primary-light border-primary-middle">
                     <div class="flex flex-row items-center w-2/5">
