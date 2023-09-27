@@ -4,35 +4,48 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import { convertToValidPercentage, 
     convertToValidAmount, 
-    gObjectParameterById,
-    gObjectParameter1ByParameter2
+    gObjectParameter1ByParameter2,
+    gTodayDate
 } from '../store/functions.js'
 
 const store = useStore()
 
-// Get Categories
-const categories = ref([])
-const subCategories = ref([])
-const loading = ref(true)
-const getCategories = async () => {
+// Get Categories and subCategories
+const gCategories = async() => {
     try {
-        const response = await axios.get(store.state.api.getCategories);
+        const response = await axios.get(store.state.api.getCategories)
+        db.value.categories = response.data
     } catch (e) {
         console.log(e)
-    } finally {
-        loading.value = false
+    }
+}
+const gSubCategories = async() => {
+    try {
+        const response = await axios.get(store.state.api.getSubCategories)
+        db.value.subCategories = response.data
+    } catch (e) {
+        console.log(e)
     }
 }
 
 // Get Default Pourcentages
-const defaultPercentages = async () => {
-    try {
-        const response = await axios.get(store.state.api.getPercentage);
-        form.value.percentagePart1 = response.data.Default.part1
-        form.value.percentagePart2 = response.data.Default.part2
-    } catch (e) {
-        console.log(e)
-    }
+const defaultPercentages = () => {
+    
+    form.value.percentagePart1 = 
+    gObjectParameter1ByParameter2(
+        db.value.participants, 
+        'default_percentage', 
+        'part_reference', 
+        'Part 1'
+    ) 
+
+    form.value.percentagePart2 = 
+    gObjectParameter1ByParameter2(
+        db.value.participants, 
+        'default_percentage', 
+        'part_reference', 
+        'Part 2'
+    ) 
 } 
 
 // Get Participants
@@ -50,9 +63,10 @@ const gParticipants = async() => {
 }
 
 onMounted(async() => {
-    await getCategories()
-    await defaultPercentages()
+    await gCategories()
+    await gSubCategories()
     await gParticipants()
+    defaultPercentages()
 })
 
 // Global Form
@@ -61,54 +75,79 @@ const form = ref({
     spendCategory: '',
     spendSubCategory: '',
     spendAmount: '',
-    dateValue: '',
+    dateValue: gTodayDate(),
     percentagePart1: '',
     percentagePart2: '',
     amountPart1: 0,
     amountPart2: 0,
     description: '',
-    participantsNames: []
+    participantsNames: [],
+    currentSubCategories: []
 
 })
 const db = ref({
     participants: {},
+    categories: [],
+    subCategories: []
 })
 
 function onChangeCategorySelector() {
-    const filtredSubCat = categories.value.filter((c) => c.id === form.value.spendCategory )
-    subCategories.value = filtredSubCat[0].subCategories
-    subCategories.value ? scDisabled.value = false : scDisabled.value = true
-    const selectedSubCategories = subCategories.value.filter((s) => s.selected)
-    form.value.spendSubCategory = selectedSubCategories[0].id
+
+    let filtredSubCat = []
+    for (let i = 0; i < db.value.subCategories.length; i++) {
+        const sc = db.value.subCategories[i];
+        for (let i = 0; i < db.value.categories.length; i++) {
+            const cat = db.value.categories[i];
+            if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
+                filtredSubCat.push(sc)
+                if(sc.selected_by_default === true) {
+                    form.value.spendSubCategory = sc.id
+                    form.value.percentagePart1 = gObjectParameter1ByParameter2(
+                        db.value.subCategories, 
+                        'percentage_part1', 
+                        'id', 
+                        sc.id
+                    )
+                    form.value.percentagePart2 = gObjectParameter1ByParameter2(
+                        db.value.subCategories, 
+                        'percentage_part2', 
+                        'id', 
+                        sc.id
+                    )
+
+                }
+            }
+        }
+    }
+    form.value.currentSubCategories = filtredSubCat
+    form.value.currentSubCategories ? scDisabled.value = false : scDisabled.value = true
+
+    onChangeSubCategorySelector()
 }
 
-// 
+function onChangeSubCategorySelector() {
+    form.value.percentagePart1 = gObjectParameter1ByParameter2(
+        db.value.subCategories, 
+        'percentage_part1', 
+        'id',
+        form.value.spendSubCategory
+    )
+    form.value.percentagePart2 = gObjectParameter1ByParameter2(
+        db.value.subCategories, 
+        'percentage_part2', 
+        'id',
+        form.value.spendSubCategory
+    )
+    handleSpendAmount()
+}
+
+// calculate part amounts from total and percentages
 function handleSpendAmount() {
     const getSpendAmout = form.value.spendAmount
     form.value.spendAmount = convertToValidAmount(getSpendAmout)
     form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
     form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
 }
-
-// Format Date
-const date = new Date() 
-const formattedDate = date.toISOString().slice(0, 10) // using an existing datetime as `v-model` you must format its dateValue to 'YYYY-MM-DDThh:mm'
-form.value.dateValue = formattedDate
-
-// Get participant Name by Id
-// function getNameById(object, parameter, id) {
-
-//     ////loop for an array
-//     // const item = db.value.participants.find(item => item.id === id);
-//     // return item ? item.name : null;
-
-//     for (const itemId in db.value.participants) {
-//       if (db.value.participants[itemId].id === id) {
-//         return db.value.participants[itemId].name;
-//       }
-//     }
-//     return null;
-// }
 
 // Choose the paying participant
 function handleParticipant(value) {
@@ -153,7 +192,7 @@ const message = ref({
 const submitHandler = async () => {
     let formData = new FormData();
 
-    if(Object.keys(categories.value).length === 0 || Object.keys(subCategories.value).length === 0) {
+    if(Object.keys(db.value.categories).length === 0 || Object.keys(db.value.subCategories).length === 0) {
         message.value = {
             success: false,
             text: 'Vous devez valider tous les champs'
@@ -161,8 +200,8 @@ const submitHandler = async () => {
         return
     }
 
-    const selectedCategorie = categories.value.filter((c) => c.id === form.value.spendCategory)
-    const selectedSubCategorie = subCategories.value.filter((c) => c.id === form.value.spendSubCategory)
+    const selectedCategorie = db.value.categories.filter((c) => c.id === db.value.categories)
+    const selectedSubCategorie = db.value.subCategories.filter((c) => c.id === db.value.subCategories)
     
     formData.append('category', selectedCategorie[0].label)
     formData.append('sub_category', selectedSubCategorie[0].label)
@@ -210,10 +249,10 @@ const submitHandler = async () => {
                 >
                     <option value="" selected disabled>Selectionnez une catégorie</option>
                     <option 
-                        v-for="(category, index) in categories" :key="index"
+                        v-for="category in db.categories" :key="category.id"
                         :value="category.id" 
                     >
-                        {{ category.label }}
+                        {{ category.category_label }}
                     </option>
                 </select>
             </div>
@@ -229,13 +268,14 @@ const submitHandler = async () => {
                     class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
                     v-model="form.spendSubCategory"
                     :disabled="scDisabled"
+                    @change="onChangeSubCategorySelector"
                 >
                 <option value="" selected disabled>Sous-catégories</option>
                     <option 
-                        v-for="(sc, index) in subCategories" :key="index"
-                        :value="sc.id" 
+                        v-for= "subCategory in form.currentSubCategories" :key="subCategory.id"
+                        :value="subCategory.id"
                     >
-                        {{ sc.label }}
+                        {{ subCategory.subcategory_label }}
                     </option>
                 </select>
             </div>
@@ -283,9 +323,7 @@ const submitHandler = async () => {
                     id="participant" 
                     class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
                     v-model="form.participantsNames"
-                    @change="handleParticipant(form.participantsNames)"
                 >
-                    <!-- <option value="" selected disabled>Selectionnez une catégorie</option> -->
                     <option 
                         v-for="participant in db.participants" :key="participant.id"
                         :value="participant.name" 

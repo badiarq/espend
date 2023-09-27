@@ -1,6 +1,6 @@
 <script>
-    import allCategories from '../data/categories.json'
-    import percentage from '../data/percentage.json'
+    // import allCategories from '../data/categories.json'
+    // import percentage from '../data/percentage.json'
     import { ref } from 'vue';
 
     export default {
