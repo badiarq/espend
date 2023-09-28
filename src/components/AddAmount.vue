@@ -232,12 +232,12 @@ const submitHandler = async () => {
 </script>
 
 <template>
-    <form @submit.prevent="newSpend" class="w-full">
-        <div class="grid grid-cols-2 gap-6">
-            <div>
+    <form @submit.prevent="newSpend" class="w-full bg-white p-6 rounded-xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="category-selector"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Catégorie
                 </label>
@@ -256,10 +256,10 @@ const submitHandler = async () => {
                     </option>
                 </select>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="category-selector"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Sous-catégorie
                 </label>
@@ -279,10 +279,10 @@ const submitHandler = async () => {
                     </option>
                 </select>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="grid-first-name"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Montant
                 </label>
@@ -297,10 +297,10 @@ const submitHandler = async () => {
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>
                 </div>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="grid-first-name"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Date
                 </label>
@@ -315,7 +315,7 @@ const submitHandler = async () => {
             <div class="col-span-2">
                 <label 
                     for="participant"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Payé par
                 </label>
@@ -332,10 +332,10 @@ const submitHandler = async () => {
                     </option>
                 </select>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="amount-part1"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Part 1 - 
                     {{ gObjectParameter1ByParameter2(
@@ -368,10 +368,10 @@ const submitHandler = async () => {
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="amount-part2"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Part 2 - 
                     {{ gObjectParameter1ByParameter2(
@@ -404,10 +404,10 @@ const submitHandler = async () => {
                     </div>
                 </div>
             </div>
-            <div class="w-full col-span-2">
+            <div class="col-span-2">
                 <label 
                     for="spend-description"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Description
                 </label>
