@@ -9,7 +9,7 @@ const store = createStore({
                 participants: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/partipants',
                 getCategories: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/categories',
                 getSubCategories: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/sub_categories',
-                postData: 'https://x8ki-letl-twmt.n7.xano.io/api:2e9hGhWt/percentage',
+                postData: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/spends',
             }
         }
     },
