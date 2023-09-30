@@ -5,7 +5,8 @@ import axios from 'axios'
 import { convertToValidPercentage, 
     convertToValidAmount, 
     gObjectParameter1ByParameter2,
-    gTodayDate
+    gTodayDate,
+gObjectParameterById
 } from '../store/functions.js'
 
 const store = useStore()
@@ -191,8 +192,13 @@ const message = ref({
 })
 const submitHandler = async () => {
     let formData = new FormData();
+    const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
 
-    if(Object.keys(db.value.categories).length === 0 || Object.keys(db.value.subCategories).length === 0) {
+    if(!form.value.spendCategory
+        || !form.value.spendSubCategory
+        || !form.value.spendAmount
+        || !participantId
+        ) {
         message.value = {
             success: false,
             text: 'Vous devez valider tous les champs'
@@ -200,17 +206,15 @@ const submitHandler = async () => {
         return
     }
 
-    const selectedCategorie = db.value.categories.filter((c) => c.id === db.value.categories)
-    const selectedSubCategorie = db.value.subCategories.filter((c) => c.id === db.value.subCategories)
-    
-    formData.append('category', selectedCategorie[0].label)
-    formData.append('sub_category', selectedSubCategorie[0].label)
-    formData.append('amount', form.value.spendAmount)
-    formData.append('date', form.value.dateValue)
-    formData.append('percentage_part1', form.value.percentagePart1)
-    formData.append('percentage_part2', form.value.percentagePart2)
-    formData.append('amount_part1', form.value.amountPart1)
-    formData.append('amount_part2', form.value.amountPart2)
+    formData.append('categories_id', form.value.spendCategory)
+    formData.append('sub_categories_id', form.value.spendSubCategory)
+    formData.append('total_amount', form.value.spendAmount)
+    formData.append('spend_date', form.value.dateValue)
+    formData.append('users_id', participantId)
+    formData.append('part1_percentage', form.value.percentagePart1)
+    formData.append('part2_percentage', form.value.percentagePart2)
+    formData.append('part1_amount', form.value.amountPart1)
+    formData.append('part2_amount', form.value.amountPart2)
     formData.append('description', form.value.description)
 
     axios
@@ -223,6 +227,7 @@ const submitHandler = async () => {
         setTimeout(() => {
             window.location.reload()
         }, 2000);
+        console.log('post success')
     })
     .catch(error => {
         console.log(error)
@@ -232,12 +237,12 @@ const submitHandler = async () => {
 </script>
 
 <template>
-    <form @submit.prevent="newSpend" class="w-full">
-        <div class="grid grid-cols-2 gap-6">
-            <div>
+    <form @submit.prevent="newSpend" class="w-full bg-white p-6 rounded-xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="category-selector"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Catégorie
                 </label>
@@ -256,10 +261,10 @@ const submitHandler = async () => {
                     </option>
                 </select>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="category-selector"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Sous-catégorie
                 </label>
@@ -279,10 +284,10 @@ const submitHandler = async () => {
                     </option>
                 </select>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="grid-first-name"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Montant
                 </label>
@@ -297,10 +302,10 @@ const submitHandler = async () => {
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>
                 </div>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="grid-first-name"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Date
                 </label>
@@ -315,7 +320,7 @@ const submitHandler = async () => {
             <div class="col-span-2">
                 <label 
                     for="participant"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Payé par
                 </label>
@@ -332,10 +337,10 @@ const submitHandler = async () => {
                     </option>
                 </select>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="amount-part1"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Part 1 - 
                     {{ gObjectParameter1ByParameter2(
@@ -359,6 +364,7 @@ const submitHandler = async () => {
                     <div class="flex flex-row items-center w-3/5">
                         <input 
                             type="Number"
+                            step="0.01"
                             class="appearance-none block h-8 bg-gray-200 text-gray-700 border border-gray-400 rounded py-3 leading-tight focus:outline-none focus:bg-white"
                             id="amount-part1"
                             v-model="form.amountPart1"
@@ -368,10 +374,10 @@ const submitHandler = async () => {
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="col-span-2 md:col-span-1">
                 <label 
                     for="amount-part2"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Part 2 - 
                     {{ gObjectParameter1ByParameter2(
@@ -395,6 +401,7 @@ const submitHandler = async () => {
                     <div class="flex flex-row items-center w-3/5">
                         <input 
                             type="Number"
+                            step="0.01"
                             class="appearance-none block h-8 bg-gray-200 text-gray-700 border border-gray-400 rounded py-3 leading-tight focus:outline-none focus:bg-white"
                             id="amount-part2"
                             v-model="form.amountPart2"
@@ -404,10 +411,10 @@ const submitHandler = async () => {
                     </div>
                 </div>
             </div>
-            <div class="w-full col-span-2">
+            <div class="col-span-2">
                 <label 
                     for="spend-description"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
                     Description
                 </label>

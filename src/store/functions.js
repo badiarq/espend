@@ -34,7 +34,7 @@ export function convertToValidAmount(amount){
 
 export function gObjectParameterById(object, parameter, id) {
     for (const itemId in object) {
-      if (object[itemId].id === id) {
+      if (object[itemId][id]=== id) {
         return object[itemId][parameter];
       }
     }
