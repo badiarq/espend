@@ -194,14 +194,21 @@ const submitHandler = async () => {
     let formData = new FormData();
     const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
 
-    if(!form.value.spendCategory
-        || !form.value.spendSubCategory
-        || !form.value.spendAmount
-        || !participantId
-        ) {
-        message.value = {
-            success: false,
-            text: 'Vous devez valider tous les champs'
+    if(!form.value.spendSubCategory || !form.value.spendAmount || !participantId) {
+        if(!form.value.spendCategory) {
+            message.value = {
+                success: false,
+                text: 'Vous devez valider tous les champs'
+            } 
+        } else if (form.value.spendCategory == '12') { // 12 is the ID of the category "Autres"
+            if (!form.value.description) {
+                message.value = {
+                    success: false,
+                    text: 'Vous devez renseigner une description quand la catégorie est "AUTRES"'
+                }
+                document.getElementById('spend-description').classList.add('border-red-500')
+                document.getElementById('spend-description').classList.add('border-2')
+            }
         }
         return
     }
