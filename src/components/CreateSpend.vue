@@ -77,7 +77,7 @@ const scDisabled = ref(true)
 const form = ref({
     spendCategory: 0,
     spendSubCategory: 0,
-    spendAmount: 0.00,
+    spendAmount: 0,
     dateValue: gTodayDate(),
     percentagePart1: 0,
     percentagePart2: 0,
@@ -104,7 +104,7 @@ function onChangeCategorySelector() {
             if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
                 filtredSubCat.push(sc)
                 if(sc.selected_by_default === true) {
-                    form.value.spendSubCategory =  parseInt(sc.id)  
+                    form.value.spendSubCategory = parseInt(sc.id) 
                     form.value.percentagePart1 = gObjectParameter1ByParameter2(
                         db.value.subCategories, 
                         'percentage_part1', 
@@ -231,6 +231,7 @@ const submitHandler = async () => {
 
     formData.append('categories_id', form.value.spendCategory)
     formData.append('sub_categories_id', form.value.spendSubCategory)
+    console.log(typeof form.value.spendAmount)
     formData.append('total_amount', form.value.spendAmount)
     formData.append('spend_date', form.value.dateValue)
     formData.append('users_id', participantId)
@@ -317,10 +318,12 @@ const submitHandler = async () => {
                 <div class="flex flex-row">
                     <input 
                         type="Number"
+                        step="0.01"
                         id="spend-amount"   
                         v-model="form.spendAmount"
                         class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
-                        @click="handleSpendAmount"
+                        @input="handleSpendAmount"
+                        @click="form.spendAmount = null"
                     >
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>
                 </div>
@@ -378,6 +381,7 @@ const submitHandler = async () => {
                     <div class="flex flex-row items-center w-2/5">
                         <input 
                             type="Number"
+                            step="0.01"
                             class="px-[7px] appearance-none block h-8 bg-gray-200 text-gray-700 border border-gray-400 rounded py-3 leading-tight focus:outline-none focus:bg-white"
                             id="percentage-part1"
                             @blur="handlePartPercentage(form.percentagePart1, 'part1')"
@@ -415,6 +419,7 @@ const submitHandler = async () => {
                     <div class="flex flex-row items-center w-2/5">
                         <input 
                             type="Number"
+                            step="0.01"
                             class="px-[7px] appearance-none block h-8 bg-gray-200 text-gray-700 border border-gray-400 rounded py-3 leading-tight focus:outline-none focus:bg-white"
                             id="percentage-part2"
                             @blur="handlePartPercentage(form.percentagePart2, 'part2')"
