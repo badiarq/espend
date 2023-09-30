@@ -75,12 +75,12 @@ onMounted(async() => {
 // Global Form
 const scDisabled = ref(true)
 const form = ref({
-    spendCategory: '',
-    spendSubCategory: '',
-    spendAmount: '',
+    spendCategory: 0,
+    spendSubCategory: 0,
+    spendAmount: 0.00,
     dateValue: gTodayDate(),
-    percentagePart1: '',
-    percentagePart2: '',
+    percentagePart1: 0,
+    percentagePart2: 0,
     amountPart1: 0,
     amountPart2: 0,
     description: '',
@@ -104,7 +104,7 @@ function onChangeCategorySelector() {
             if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
                 filtredSubCat.push(sc)
                 if(sc.selected_by_default === true) {
-                    form.value.spendSubCategory = sc.id
+                    form.value.spendSubCategory =  parseInt(sc.id)  
                     form.value.percentagePart1 = gObjectParameter1ByParameter2(
                         db.value.subCategories, 
                         'percentage_part1', 
@@ -122,7 +122,9 @@ function onChangeCategorySelector() {
             }
         }
     }
-    form.value.currentSubCategories = filtredSubCat
+    if(form.value.currentSubCategories) {
+        form.value.currentSubCategories = filtredSubCat
+    }
     form.value.currentSubCategories ? scDisabled.value = false : scDisabled.value = true
 
     onChangeSubCategorySelector()
