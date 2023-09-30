@@ -55,3 +55,17 @@ export function gTodayDate() {
     const formattedDate = date.toISOString().slice(0, 10)
     return formattedDate
 }
+
+export function highlight(id) {
+    const DOM = document.getElementById(id)
+    DOM.classList.add('border-red-500')
+    DOM.classList.add('border-2')
+}
+
+export function unHighlight(id) {
+    const DOM = document.getElementById(id)
+    if (DOM.classList.contains('border-red-500')) {
+        DOM.classList.remove('border-red-500')
+        DOM.classList.remove('border-2')
+    }
+}

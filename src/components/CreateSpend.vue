@@ -6,7 +6,9 @@ import { convertToValidPercentage,
     convertToValidAmount, 
     gObjectParameter1ByParameter2,
     gTodayDate,
-gObjectParameterById
+    highlight,
+    unHighlight
+
 } from '../store/functions.js'
 
 const store = useStore()
@@ -124,6 +126,9 @@ function onChangeCategorySelector() {
     form.value.currentSubCategories ? scDisabled.value = false : scDisabled.value = true
 
     onChangeSubCategorySelector()
+    if(form.value.currentSubCategories) {
+        unHighlight('subcategory-selector')
+    }
 }
 
 function onChangeSubCategorySelector() {
@@ -144,6 +149,7 @@ function onChangeSubCategorySelector() {
 
 // calculate part amounts from total and percentages
 function handleSpendAmount() {
+    unHighlight('spend-amount')
     const getSpendAmout = form.value.spendAmount
     form.value.spendAmount = convertToValidAmount(getSpendAmout)
     form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
@@ -152,7 +158,7 @@ function handleSpendAmount() {
 
 // Choose the paying participant
 function handleParticipant(value) {
-    console.log(value)
+    unHighlight('participant')
 }
 
 // Assign Parts pecentages
@@ -185,6 +191,11 @@ function handlePartAmount(amount, type) {
     }
 }
 
+// Remove Highlight if there is description
+function handleDescription() {
+    unHighlight('spend-description')
+}
+
 // Send to Database
 const message = ref({
     success: false,
@@ -195,20 +206,23 @@ const submitHandler = async () => {
     const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
 
     if(!form.value.spendSubCategory || !form.value.spendAmount || !participantId) {
-        if(!form.value.spendCategory) {
-            message.value = {
-                success: false,
-                text: 'Vous devez valider tous les champs'
-            } 
-        } else if (form.value.spendCategory == '12') { // 12 is the ID of the category "Autres"
+        // 12 is the ID of the category "Autres"
+        if (form.value.spendCategory == '12') { 
             if (!form.value.description) {
                 message.value = {
                     success: false,
                     text: 'Vous devez renseigner une description quand la catégorie est "AUTRES"'
                 }
-                document.getElementById('spend-description').classList.add('border-red-500')
-                document.getElementById('spend-description').classList.add('border-2')
+                highlight('spend-description')
             }
+        } else {
+            if(!form.value.spendSubCategory) { highlight('subcategory-selector') }
+            if(!form.value.spendAmount) { highlight('spend-amount') }
+            if(!participantId) { highlight('participant') }
+            message.value = {
+                success: false,
+                text: 'Vous devez valider tous les champs'
+            } 
         }
         return
     }
@@ -276,7 +290,7 @@ const submitHandler = async () => {
                     Sous-catégorie
                 </label>
                 <select 
-                    id="category-selector" 
+                    id="subcategory-selector" 
                     class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
                     v-model="form.spendSubCategory"
                     :disabled="scDisabled"
@@ -304,7 +318,7 @@ const submitHandler = async () => {
                         id="spend-amount"   
                         v-model="form.spendAmount"
                         class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
-                        @input="handleSpendAmount"
+                        @click="handleSpendAmount"
                     >
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>
                 </div>
@@ -335,6 +349,7 @@ const submitHandler = async () => {
                     id="participant" 
                     class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
                     v-model="form.participantsNames"
+                    @click="handleParticipant"
                 >
                     <option 
                         v-for="participant in db.participants" :key="participant.id"
@@ -432,22 +447,23 @@ const submitHandler = async () => {
                     rows="3" 
                     class="col-span-2"
                     v-model="form.description"
+                    @input="handleDescription"
                 ></textarea>
             </div>
             <div class="w-full col-span-2 flex flex-row justify-end">
+                <div 
+                    v-if="message.text" 
+                    class="text-center text-sm text-white p-3 rounded-md w-full"
+                    :class="message.success ? 'bg-green-500' : 'bg-red-500'"
+                >
+                    {{ message.text }}
+                </div>
                 <button 
                     class="btn bg-primary-middle"
                     @click="submitHandler"
                     >
                     Enregistrer 
                 </button>
-            </div>
-            <div 
-                v-if="message.text" 
-                class="mt-4 text-center text-sm text-white p-3 col-span-2"
-                :class="message.success ? 'bg-green-500' : 'bg-red-500'"
-            >
-                {{ message.text }}
             </div>
         </div> 
     </form>
