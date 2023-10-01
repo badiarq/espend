@@ -7,14 +7,14 @@
         gObjectParameter1ByParameter2,
         gTodayDate,
         highlight,
-        unHighlight
-
+        unHighlight,
+        getTable
     } from '../store/functions.js'
 
+    // Global variables
     const store = useStore()
-    
-    // Global Form
     const scDisabled = ref(true)
+    // Global Form
     const form = ref({
         spendCategory: 0,
         spendSubCategory: 0,
@@ -29,66 +29,29 @@
         currentSubCategories: []
 
     })
+    // Store from DataBase
     const db = ref({
         participants: {},
         categories: [],
         subCategories: []
     })
 
-    // Get Categories and subCategories
-    const gCategories = async() => {
-        try {
-            const response = await axios.get(store.state.api.categoriesTable)
-            db.value.categories = response.data
-        } catch (e) {
-            console.log(e)
-        }
-    }
-    const gSubCategories = async() => {
-        try {
-            const response = await axios.get(store.state.api.subCategoriesTable)
-            db.value.subCategories = response.data
-        } catch (e) {
-            console.log(e)
+    // Store list of participants
+    function storeParticipants() {
+        for (let i = 0; i < db.value.participants.length; i++) {
+            const name = db.value.participants[i].name;
+            form.value.participantsNames.push(name)
         }
     }
 
     // Get Default Pourcentages
     const defaultPercentages = () => {
-        
-        form.value.percentagePart1 = 
-        gObjectParameter1ByParameter2(
-            db.value.participants, 
-            'default_percentage', 
-            'part_reference', 
-            'Part 1'
-        ) 
-
-        form.value.percentagePart2 = 
-        gObjectParameter1ByParameter2(
-            db.value.participants, 
-            'default_percentage', 
-            'part_reference', 
-            'Part 2'
-        ) 
-    } 
-
-    // Get Participants
-    const gParticipants = async() => {
-        try {
-            const response = await axios.get(store.state.api.participantsTable)
-            db.value.participants = response.data
-            for (let i = 0; i < response.data.length; i++) {
-                const name = response.data[i].name;
-                form.value.participantsNames.push(name)
-            }
-        } catch (e) {
-            console.log(e)
-        }
+        form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.participants, 'default_percentage', 'part_reference', 'Part 1') 
+        form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.participants, 'default_percentage', 'part_reference', 'Part 2') 
     }
 
     function onChangeCategorySelector() {
-
+        unHighlight( 'category-selector' )
         let filtredSubCat = []
         for (let i = 0; i < db.value.subCategories.length; i++) {
             const sc = db.value.subCategories[i];
@@ -98,19 +61,8 @@
                     filtredSubCat.push(sc)
                     if(sc.selected_by_default === true) {
                         form.value.spendSubCategory = parseInt(sc.id) 
-                        form.value.percentagePart1 = gObjectParameter1ByParameter2(
-                            db.value.subCategories, 
-                            'percentage_part1', 
-                            'id', 
-                            sc.id
-                        )
-                        form.value.percentagePart2 = gObjectParameter1ByParameter2(
-                            db.value.subCategories, 
-                            'percentage_part2', 
-                            'id', 
-                            sc.id
-                        )
-
+                        form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part1', 'id', sc.id)
+                        form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part2', 'id', sc.id)
                     }
                 }
             }
@@ -127,18 +79,8 @@
     }
 
     function onChangeSubCategorySelector() {
-        form.value.percentagePart1 = gObjectParameter1ByParameter2(
-            db.value.subCategories, 
-            'percentage_part1', 
-            'id',
-            form.value.spendSubCategory
-        )
-        form.value.percentagePart2 = gObjectParameter1ByParameter2(
-            db.value.subCategories, 
-            'percentage_part2', 
-            'id',
-            form.value.spendSubCategory
-        )
+        form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part1', 'id',form.value.spendSubCategory)
+        form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part2', 'id',form.value.spendSubCategory)
         handleSpendAmount()
     }
 
@@ -149,11 +91,6 @@
         form.value.spendAmount = convertToValidAmount(getSpendAmout)
         form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
         form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
-    }
-
-    // Choose the paying participant
-    function handleParticipant(value) {
-        unHighlight('participant')
     }
 
     // Assign Parts pecentages
@@ -211,6 +148,7 @@
                     highlight('spend-description')
                 }
             } else {
+                if(!form.value.spendCategory) { highlight('category-selector') }
                 if(!form.value.spendSubCategory) { highlight('subcategory-selector') }
                 if(!form.value.spendAmount) { highlight('spend-amount') }
                 if(!participantId) { highlight('participant') }
@@ -252,9 +190,10 @@
     }
 
     onMounted(async() => {
-        await gCategories()
-        await gSubCategories()
-        await gParticipants()
+        db.value.categories = await getTable(store.state.api.categoriesTable)
+        db.value.subCategories = await getTable(store.state.api.subCategoriesTable)
+        db.value.participants = await getTable(store.state.api.participantsTable)
+        storeParticipants()
         defaultPercentages()
     })
 
@@ -354,7 +293,7 @@
                     id="participant" 
                     class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
                     v-model="form.participantsNames"
-                    @click="handleParticipant"
+                    @click="unHighlight('participant')"
                 >
                     <option 
                         v-for="participant in db.participants" :key="participant.id"

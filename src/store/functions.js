@@ -1,3 +1,14 @@
+import axios from 'axios'
+
+export async function getTable(originUrl) {
+    try {
+        const response = await axios.get(originUrl)
+        return response.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 export function convertToValidPercentage(percentage) {
     const result = Math.abs(percentage)
     const double = roundIfDouble(result)
