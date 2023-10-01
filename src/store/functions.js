@@ -94,11 +94,11 @@ export function addNewOption(optionId, optionText, optionValue, parentNodeId) {
     }
 }
 
-export function handleSpendAmount(spendAmount, amountPart1, amountPart2, percentagePart1, percentagePart2) {
+export function handleSpendAmount(spendAmount, percentagePart1, percentagePart2) {
     unHighlight('spend-amount')
     const getSpendAmout = spendAmount
     spendAmount = convertToValidAmount(getSpendAmout)
-    amountPart1 = spendAmount * percentagePart1 / 100
-    amountPart2 = spendAmount * percentagePart2 / 100
+    const amountPart1 = spendAmount * percentagePart1 / 100
+    const amountPart2 = spendAmount * percentagePart2 / 100
     return { amountPart1, amountPart2 }
 }

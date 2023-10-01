@@ -105,6 +105,12 @@
     //     form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
     // }
 
+    function setHandleSpendAmount(spendAmout, percetagePart1, percetagePart2) {
+      const { amountPart1, amountPart2 } = handleSpendAmount(spendAmout, percetagePart1, percetagePart2)
+      form.value.amountPart1 = amountPart1
+      form.value.amountPart2 = amountPart2
+    }
+
     // Assign Parts pecentages
     function handlePartPercentage(percentage, type) {
         if(type === 'part1') {
@@ -139,10 +145,7 @@
     function handleDescription() {
         unHighlight('spend-description')
     }
-
-    //
-    const test = handleSpendAmount(form.value.spendAmount, form.value.amountPart1, form.value.amountPart2, form.value.percentagePart1, form.value.percentagePart2)
-
+    
     // Send to Database
     const message = ref({
         success: false,
@@ -216,7 +219,6 @@
 
 <template>
     <form @submit.prevent="newSpend" class="w-full bg-white p-6 rounded-xl">
-        {{ test }}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
             <div class="col-span-2 md:col-span-1">
                 <label 
@@ -277,7 +279,7 @@
                         id="spend-amount"   
                         v-model="form.spendAmount"
                         class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
-                        @change="handleSpendAmount(form.spendAmount, form.amountPart1, form.amountPart2, form.percentagePart1, form.percentagePart2)"
+                        @change="setHandleSpendAmount(form.spendAmount, form.percentagePart1, form.percentagePart2)"
                         @click="form.spendAmount = null"
                     >
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>

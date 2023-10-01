@@ -85,6 +85,12 @@
         return false;
     }
 
+    function setHandleSpendAmount(spendAmout, percetagePart1, percetagePart2) {
+      const { amountPart1, amountPart2 } = handleSpendAmount(spendAmout, percetagePart1, percetagePart2)
+      form.value.amountPart1 = amountPart1
+      form.value.amountPart2 = amountPart2
+    }
+
     onMounted(async() => {
         await gSpends()
         await gCategories()
