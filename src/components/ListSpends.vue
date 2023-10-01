@@ -4,6 +4,8 @@
     import axios from 'axios'
     import { 
         gObjectParameter1ByParameter2,
+        addNewOption,
+        handleSpendAmount
     } from '../store/functions.js'
     
     const store = useStore()
@@ -69,31 +71,17 @@
         return db.value.spends.slice().sort((a, b) => new Date(b.spend_date) - new Date(a.spend_date))
     })
 
-    function handleSelectedSpend(item, subCategories, participants) {
+    function handleSelectedSpend(item, subCategories) {
         document.getElementById('category-selector').value = item.categories_id
-        //document.getElementById('subcategory-selector').value = gObjectParameter1ByParameter2(subCategories,'subcategory_label', 'id', item.sub_categories_id)
         document.getElementById('subcategory-selector').disabled = false
-        const filtredSubCat = db.value.categories.filter((c) => c.id === subCategories.categories_id)
-        console.log(filtredSubCat)
-        // // create option using DOM
-        // const existingNode = document.getElementById('selected-spend')
-        // if(existingNode) {
-        //     existingNode.remove()
-        // }
-        // const newSelectedSpend = document.createElement('option');
-        // newSelectedSpend.setAttribute("id", "selected-spend")
-        // const selectedSC = document.createTextNode(gObjectParameter1ByParameter2(subCategories,'subcategory_label', 'id', item.sub_categories_id));
-        // // set option text
-        // newSelectedSpend.appendChild(selectedSC);
-        // // and option value
-        // newSelectedSpend.setAttribute('value','selected Spend');
-        // const select = document.getElementById('subcategory-selector'); 
-        // select.appendChild(newSelectedSpend);
-        // select.value = 'selected Spend'
-
-        // document.getElementById('spend-amount').value = item.total_amount
-        // document.getElementById('participant').value = gObjectParameter1ByParameter2(participants,'name', 'id', item.users_id)
-
+        const activeSubCategories = subCategories.filter((sc) => sc.categories_id === item.categories_id)        
+        activeSubCategories.forEach((subCategory) => addNewOption(subCategory.id, subCategory.subcategory_label, subCategory.id, 'subcategory-selector'))
+        const select = document.getElementById('subcategory-selector');
+        select.value = item.sub_categories_id
+        document.getElementById('spend-amount').value = item.total_amount
+        document.getElementById('percentage-part1').value = item.part1_percentage
+        document.getElementById('percentage-part2').value = item.part2_percentage
+        //handleSpendAmount()
         return false;
     }
 
@@ -124,7 +112,7 @@
                     :key="index" 
                     class="py-3 sm:py-4"
                 >
-                    <a href="#" class="flex flex-row justify-between" @click="handleSelectedSpend(item, db.subCategories, db.participants)">
+                    <a href="#" class="flex flex-row justify-between" @click="handleSelectedSpend(item, db.subCategories)">
                         <div>
                             <p class="text-md font-medium text-gray-900 truncate dark:text-white">
                                 {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}

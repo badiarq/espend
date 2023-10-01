@@ -8,7 +8,8 @@
         gTodayDate,
         highlight,
         unHighlight,
-        getTable
+        getTable,
+        handleSpendAmount
     } from '../store/functions.js'
 
     // Global variables
@@ -80,18 +81,29 @@
 
     function onChangeSubCategorySelector() {
         form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part1', 'id',form.value.spendSubCategory)
+        // let selectedSubCategory = db.value.subCategories.find(subCategory => {
+        //     return subCategory.id == form.value.spendSubCategory
+        // })
+        // form.value.percentagePart1 = selectedSubCategory.percentage_part1
+        
         form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part2', 'id',form.value.spendSubCategory)
-        handleSpendAmount()
+        handleSpendAmount(
+        form.value.spendAmount, 
+        form.value.amountPart1, 
+        form.value.amountPart2, 
+        form.value.percentagePart1, 
+        form.value.percentagePart2
+    )
     }
 
     // calculate part amounts from total and percentages
-    function handleSpendAmount() {
-        unHighlight('spend-amount')
-        const getSpendAmout = form.value.spendAmount
-        form.value.spendAmount = convertToValidAmount(getSpendAmout)
-        form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
-        form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
-    }
+    // function handleSpendAmount() {
+    //     unHighlight('spend-amount')
+    //     const getSpendAmout = form.value.spendAmount
+    //     form.value.spendAmount = convertToValidAmount(getSpendAmout)
+    //     form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
+    //     form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
+    // }
 
     // Assign Parts pecentages
     function handlePartPercentage(percentage, type) {
@@ -261,7 +273,7 @@
                         id="spend-amount"   
                         v-model="form.spendAmount"
                         class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
-                        @change="handleSpendAmount"
+                        @change="handleSpendAmount(form.spendAmount, form.amountPart1, form.amountPart2, form.percentagePart1, form.percentagePart2)"
                         @click="form.spendAmount = null"
                     >
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>

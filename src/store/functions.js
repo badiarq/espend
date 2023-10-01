@@ -80,3 +80,25 @@ export function unHighlight(id) {
         DOM.classList.remove('border-2')
     }
 }
+
+export function addNewOption(optionId, optionText, optionValue, parentNodeId) {
+    const selectorDOM = document.getElementById(parentNodeId);
+    const optionNode = document.getElementById(optionId)
+    if(!optionNode) {
+        const newOption = document.createElement('option');
+        newOption.setAttribute("id", optionId)
+        const newSubCategory = document.createTextNode(optionText)
+        newOption.appendChild(newSubCategory)   
+        newOption.setAttribute('value', optionValue)
+        selectorDOM.appendChild(newOption)
+    }
+}
+
+export function handleSpendAmount(spendAmount, amountPart1, amountPart2, percentagePart1, percentagePart2) {
+    unHighlight('spend-amount')
+    const getSpendAmout = spendAmount
+    spendAmount = convertToValidAmount(getSpendAmout)
+    amountPart1 = spendAmount * percentagePart1 / 100
+    amountPart2 = spendAmount * percentagePart2 / 100
+    return amountPart1, amountPart2
+}
