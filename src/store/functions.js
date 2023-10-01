@@ -75,10 +75,10 @@ export function highlight(id) {
 
 export function unHighlight(id) {
     const DOM = document.getElementById(id)
-    if (DOM.classList.contains('border-red-500')) {
-        DOM.classList.remove('border-red-500')
-        DOM.classList.remove('border-2')
-    }
+    // if (DOM.classList.contains('border-red-500')) {
+    //     DOM.classList.remove('border-red-500')
+    //     DOM.classList.remove('border-2')
+    // }
 }
 
 export function addNewOption(optionId, optionText, optionValue, parentNodeId) {
@@ -100,5 +100,5 @@ export function handleSpendAmount(spendAmount, amountPart1, amountPart2, percent
     spendAmount = convertToValidAmount(getSpendAmout)
     amountPart1 = spendAmount * percentagePart1 / 100
     amountPart2 = spendAmount * percentagePart2 / 100
-    return amountPart1, amountPart2
+    return { amountPart1, amountPart2 }
 }

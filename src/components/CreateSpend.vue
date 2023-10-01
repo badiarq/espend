@@ -140,6 +140,9 @@
         unHighlight('spend-description')
     }
 
+    //
+    const test = handleSpendAmount(form.value.spendAmount, form.value.amountPart1, form.value.amountPart2, form.value.percentagePart1, form.value.percentagePart2)
+
     // Send to Database
     const message = ref({
         success: false,
@@ -213,6 +216,7 @@
 
 <template>
     <form @submit.prevent="newSpend" class="w-full bg-white p-6 rounded-xl">
+        {{ test }}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
             <div class="col-span-2 md:col-span-1">
                 <label 
