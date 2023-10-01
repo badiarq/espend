@@ -1,262 +1,262 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useStore } from 'vuex'
-import axios from 'axios'
-import { convertToValidPercentage, 
-    convertToValidAmount, 
-    gObjectParameter1ByParameter2,
-    gTodayDate,
-    highlight,
-    unHighlight
+    import { ref, onMounted } from 'vue'
+    import { useStore } from 'vuex'
+    import axios from 'axios'
+    import { convertToValidPercentage, 
+        convertToValidAmount, 
+        gObjectParameter1ByParameter2,
+        gTodayDate,
+        highlight,
+        unHighlight
 
-} from '../store/functions.js'
+    } from '../store/functions.js'
 
-const store = useStore()
-
-// Get Categories and subCategories
-const gCategories = async() => {
-    try {
-        const response = await axios.get(store.state.api.getCategories)
-        db.value.categories = response.data
-    } catch (e) {
-        console.log(e)
-    }
-}
-const gSubCategories = async() => {
-    try {
-        const response = await axios.get(store.state.api.getSubCategories)
-        db.value.subCategories = response.data
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-// Get Default Pourcentages
-const defaultPercentages = () => {
+    const store = useStore()
     
-    form.value.percentagePart1 = 
-    gObjectParameter1ByParameter2(
-        db.value.participants, 
-        'default_percentage', 
-        'part_reference', 
-        'Part 1'
-    ) 
+    // Global Form
+    const scDisabled = ref(true)
+    const form = ref({
+        spendCategory: 0,
+        spendSubCategory: 0,
+        spendAmount: 0,
+        dateValue: gTodayDate(),
+        percentagePart1: 0,
+        percentagePart2: 0,
+        amountPart1: 0,
+        amountPart2: 0,
+        description: '',
+        participantsNames: [],
+        currentSubCategories: []
 
-    form.value.percentagePart2 = 
-    gObjectParameter1ByParameter2(
-        db.value.participants, 
-        'default_percentage', 
-        'part_reference', 
-        'Part 2'
-    ) 
-} 
+    })
+    const db = ref({
+        participants: {},
+        categories: [],
+        subCategories: []
+    })
 
-// Get Participants
-const gParticipants = async() => {
-    try {
-        const response = await axios.get(store.state.api.participants)
-        db.value.participants = response.data
-        for (let i = 0; i < response.data.length; i++) {
-            const name = response.data[i].name;
-            form.value.participantsNames.push(name)
+    // Get Categories and subCategories
+    const gCategories = async() => {
+        try {
+            const response = await axios.get(store.state.api.categoriesTable)
+            db.value.categories = response.data
+        } catch (e) {
+            console.log(e)
         }
-    } catch (e) {
-        console.log(e)
     }
-}
+    const gSubCategories = async() => {
+        try {
+            const response = await axios.get(store.state.api.subCategoriesTable)
+            db.value.subCategories = response.data
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
-onMounted(async() => {
-    await gCategories()
-    await gSubCategories()
-    await gParticipants()
-    defaultPercentages()
-})
+    // Get Default Pourcentages
+    const defaultPercentages = () => {
+        
+        form.value.percentagePart1 = 
+        gObjectParameter1ByParameter2(
+            db.value.participants, 
+            'default_percentage', 
+            'part_reference', 
+            'Part 1'
+        ) 
 
-// Global Form
-const scDisabled = ref(true)
-const form = ref({
-    spendCategory: 0,
-    spendSubCategory: 0,
-    spendAmount: 0,
-    dateValue: gTodayDate(),
-    percentagePart1: 0,
-    percentagePart2: 0,
-    amountPart1: 0,
-    amountPart2: 0,
-    description: '',
-    participantsNames: [],
-    currentSubCategories: []
+        form.value.percentagePart2 = 
+        gObjectParameter1ByParameter2(
+            db.value.participants, 
+            'default_percentage', 
+            'part_reference', 
+            'Part 2'
+        ) 
+    } 
 
-})
-const db = ref({
-    participants: {},
-    categories: [],
-    subCategories: []
-})
+    // Get Participants
+    const gParticipants = async() => {
+        try {
+            const response = await axios.get(store.state.api.participantsTable)
+            db.value.participants = response.data
+            for (let i = 0; i < response.data.length; i++) {
+                const name = response.data[i].name;
+                form.value.participantsNames.push(name)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
-function onChangeCategorySelector() {
+    function onChangeCategorySelector() {
 
-    let filtredSubCat = []
-    for (let i = 0; i < db.value.subCategories.length; i++) {
-        const sc = db.value.subCategories[i];
-        for (let i = 0; i < db.value.categories.length; i++) {
-            const cat = db.value.categories[i];
-            if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
-                filtredSubCat.push(sc)
-                if(sc.selected_by_default === true) {
-                    form.value.spendSubCategory = parseInt(sc.id) 
-                    form.value.percentagePart1 = gObjectParameter1ByParameter2(
-                        db.value.subCategories, 
-                        'percentage_part1', 
-                        'id', 
-                        sc.id
-                    )
-                    form.value.percentagePart2 = gObjectParameter1ByParameter2(
-                        db.value.subCategories, 
-                        'percentage_part2', 
-                        'id', 
-                        sc.id
-                    )
+        let filtredSubCat = []
+        for (let i = 0; i < db.value.subCategories.length; i++) {
+            const sc = db.value.subCategories[i];
+            for (let i = 0; i < db.value.categories.length; i++) {
+                const cat = db.value.categories[i];
+                if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
+                    filtredSubCat.push(sc)
+                    if(sc.selected_by_default === true) {
+                        form.value.spendSubCategory = parseInt(sc.id) 
+                        form.value.percentagePart1 = gObjectParameter1ByParameter2(
+                            db.value.subCategories, 
+                            'percentage_part1', 
+                            'id', 
+                            sc.id
+                        )
+                        form.value.percentagePart2 = gObjectParameter1ByParameter2(
+                            db.value.subCategories, 
+                            'percentage_part2', 
+                            'id', 
+                            sc.id
+                        )
 
+                    }
                 }
             }
         }
+        if(form.value.currentSubCategories) {
+            form.value.currentSubCategories = filtredSubCat
+        }
+        form.value.currentSubCategories ? scDisabled.value = false : scDisabled.value = true
+
+        onChangeSubCategorySelector()
+        if(form.value.currentSubCategories) {
+            unHighlight('subcategory-selector')
+        }
     }
-    if(form.value.currentSubCategories) {
-        form.value.currentSubCategories = filtredSubCat
+
+    function onChangeSubCategorySelector() {
+        form.value.percentagePart1 = gObjectParameter1ByParameter2(
+            db.value.subCategories, 
+            'percentage_part1', 
+            'id',
+            form.value.spendSubCategory
+        )
+        form.value.percentagePart2 = gObjectParameter1ByParameter2(
+            db.value.subCategories, 
+            'percentage_part2', 
+            'id',
+            form.value.spendSubCategory
+        )
+        handleSpendAmount()
     }
-    form.value.currentSubCategories ? scDisabled.value = false : scDisabled.value = true
 
-    onChangeSubCategorySelector()
-    if(form.value.currentSubCategories) {
-        unHighlight('subcategory-selector')
-    }
-}
-
-function onChangeSubCategorySelector() {
-    form.value.percentagePart1 = gObjectParameter1ByParameter2(
-        db.value.subCategories, 
-        'percentage_part1', 
-        'id',
-        form.value.spendSubCategory
-    )
-    form.value.percentagePart2 = gObjectParameter1ByParameter2(
-        db.value.subCategories, 
-        'percentage_part2', 
-        'id',
-        form.value.spendSubCategory
-    )
-    handleSpendAmount()
-}
-
-// calculate part amounts from total and percentages
-function handleSpendAmount() {
-    unHighlight('spend-amount')
-    const getSpendAmout = form.value.spendAmount
-    form.value.spendAmount = convertToValidAmount(getSpendAmout)
-    form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
-    form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
-}
-
-// Choose the paying participant
-function handleParticipant(value) {
-    unHighlight('participant')
-}
-
-// Assign Parts pecentages
-function handlePartPercentage(percentage, type) {
-    if(type === 'part1') {
-        const percentageVal1 = +percentage
-        form.value.percentagePart1 = convertToValidPercentage(percentageVal1)
+    // calculate part amounts from total and percentages
+    function handleSpendAmount() {
+        unHighlight('spend-amount')
+        const getSpendAmout = form.value.spendAmount
+        form.value.spendAmount = convertToValidAmount(getSpendAmout)
         form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
-        form.value.percentagePart2 = 100 - (form.value.percentagePart1)
         form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
-    } else {
-        const percentageVal2 = +percentage
-        form.value.percentagePart2 = convertToValidPercentage(percentageVal2)
-        form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
-        form.value.percentagePart1 = 100 - (form.value.percentagePart2)
-        form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
     }
-}
 
-// Assign Parts Amounts
-function handlePartAmount(amount, type) {
-    if(type === 'part1') {
-        form.value.amountPart2 = form.value.spendAmount - amount
-        form.value.percentagePart1 = amount / form.value.spendAmount * 100
-        form.value.percentagePart2 = 100 - form.value.percentagePart1
-    } else {
-        form.value.amountPart1 = form.value.spendAmount - amount
-        form.value.percentagePart2 = amount / form.value.spendAmount * 100
-        form.value.percentagePart1 = 100 - form.value.percentagePart2
+    // Choose the paying participant
+    function handleParticipant(value) {
+        unHighlight('participant')
     }
-}
 
-// Remove Highlight if there is description
-function handleDescription() {
-    unHighlight('spend-description')
-}
+    // Assign Parts pecentages
+    function handlePartPercentage(percentage, type) {
+        if(type === 'part1') {
+            const percentageVal1 = +percentage
+            form.value.percentagePart1 = convertToValidPercentage(percentageVal1)
+            form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
+            form.value.percentagePart2 = 100 - (form.value.percentagePart1)
+            form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
+        } else {
+            const percentageVal2 = +percentage
+            form.value.percentagePart2 = convertToValidPercentage(percentageVal2)
+            form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
+            form.value.percentagePart1 = 100 - (form.value.percentagePart2)
+            form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
+        }
+    }
 
-// Send to Database
-const message = ref({
-    success: false,
-    text: ''
-})
-const submitHandler = async () => {
-    let formData = new FormData();
-    const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
+    // Assign Parts Amounts
+    function handlePartAmount(amount, type) {
+        if(type === 'part1') {
+            form.value.amountPart2 = form.value.spendAmount - amount
+            form.value.percentagePart1 = amount / form.value.spendAmount * 100
+            form.value.percentagePart2 = 100 - form.value.percentagePart1
+        } else {
+            form.value.amountPart1 = form.value.spendAmount - amount
+            form.value.percentagePart2 = amount / form.value.spendAmount * 100
+            form.value.percentagePart1 = 100 - form.value.percentagePart2
+        }
+    }
 
-    if(!form.value.spendSubCategory || !form.value.spendAmount || !participantId) {
-        // 12 is the ID of the category "Autres"
-        if (form.value.spendCategory == '12') { 
-            if (!form.value.description) {
+    // Remove Highlight if there is description
+    function handleDescription() {
+        unHighlight('spend-description')
+    }
+
+    // Send to Database
+    const message = ref({
+        success: false,
+        text: ''
+    })
+    const submitHandler = async () => {
+        let formData = new FormData();
+        const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
+
+        if(!form.value.spendSubCategory || !form.value.spendAmount || !participantId) {
+            // 12 is the ID of the category "Autres"
+            if (form.value.spendCategory == '12') { 
+                if (!form.value.description) {
+                    message.value = {
+                        success: false,
+                        text: 'Vous devez renseigner une description quand la catégorie est "AUTRES"'
+                    }
+                    highlight('spend-description')
+                }
+            } else {
+                if(!form.value.spendSubCategory) { highlight('subcategory-selector') }
+                if(!form.value.spendAmount) { highlight('spend-amount') }
+                if(!participantId) { highlight('participant') }
                 message.value = {
                     success: false,
-                    text: 'Vous devez renseigner une description quand la catégorie est "AUTRES"'
-                }
-                highlight('spend-description')
+                    text: 'Vous devez valider tous les champs'
+                } 
             }
-        } else {
-            if(!form.value.spendSubCategory) { highlight('subcategory-selector') }
-            if(!form.value.spendAmount) { highlight('spend-amount') }
-            if(!participantId) { highlight('participant') }
-            message.value = {
-                success: false,
-                text: 'Vous devez valider tous les champs'
-            } 
+            return
         }
-        return
+
+        formData.append('categories_id', form.value.spendCategory)
+        formData.append('sub_categories_id', form.value.spendSubCategory)
+        console.log(typeof form.value.spendAmount)
+        formData.append('total_amount', form.value.spendAmount)
+        formData.append('spend_date', form.value.dateValue)
+        formData.append('users_id', participantId)
+        formData.append('part1_percentage', form.value.percentagePart1)
+        formData.append('part2_percentage', form.value.percentagePart2)
+        formData.append('part1_amount', form.value.amountPart1)
+        formData.append('part2_amount', form.value.amountPart2)
+        formData.append('description', form.value.description)
+
+        axios
+        .post(store.state.api.spendsTable, formData) 
+        .then((response) => {
+            message.value = {
+                success: true,
+                text: 'Montant envoyé avec succès'
+            }
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000);
+            console.log('post success')
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
 
-    formData.append('categories_id', form.value.spendCategory)
-    formData.append('sub_categories_id', form.value.spendSubCategory)
-    console.log(typeof form.value.spendAmount)
-    formData.append('total_amount', form.value.spendAmount)
-    formData.append('spend_date', form.value.dateValue)
-    formData.append('users_id', participantId)
-    formData.append('part1_percentage', form.value.percentagePart1)
-    formData.append('part2_percentage', form.value.percentagePart2)
-    formData.append('part1_amount', form.value.amountPart1)
-    formData.append('part2_amount', form.value.amountPart2)
-    formData.append('description', form.value.description)
-
-    axios
-    .post(store.state.api.postData, formData) 
-    .then((response) => {
-        message.value = {
-            success: true,
-            text: 'Montant envoyé avec succès'
-        }
-        setTimeout(() => {
-            window.location.reload()
-        }, 2000);
-        console.log('post success')
+    onMounted(async() => {
+        await gCategories()
+        await gSubCategories()
+        await gParticipants()
+        defaultPercentages()
     })
-    .catch(error => {
-        console.log(error)
-    })
-}
 
 </script>
 
@@ -322,7 +322,7 @@ const submitHandler = async () => {
                         id="spend-amount"   
                         v-model="form.spendAmount"
                         class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
-                        @input="handleSpendAmount"
+                        @change="handleSpendAmount"
                         @click="form.spendAmount = null"
                     >
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>

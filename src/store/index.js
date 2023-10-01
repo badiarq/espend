@@ -6,10 +6,10 @@ const store = createStore({
         return {
             api: {
                 // getCategories: '../src/data/mycategories.json',
-                participants: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/partipants',
-                getCategories: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/categories',
-                getSubCategories: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/sub_categories',
-                postData: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/spends',
+                participantsTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/partipants',
+                categoriesTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/categories',
+                subCategoriesTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/sub_categories',
+                spendsTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/spends',
             }
         }
     },
