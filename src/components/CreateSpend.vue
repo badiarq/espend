@@ -8,7 +8,8 @@
         highlight,
         unHighlight,
         getTable,
-        handleSpendAmount
+        handleSpendAmount,
+        resetSubCategories
     } from '../store/functions.js'
 
     // Global variables
@@ -52,15 +53,17 @@
 
     function onChangeCategorySelector() {
         unHighlight( 'category-selector' )
+        form.value.currentSubCategories = []
         let filtredSubCat = []
         for (let i = 0; i < db.value.subCategories.length; i++) {
-            const sc = db.value.subCategories[i];
+            let sc = db.value.subCategories[i];
             for (let i = 0; i < db.value.categories.length; i++) {
                 const cat = db.value.categories[i];
+                resetSubCategories()
                 if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
                     filtredSubCat.push(sc)
                     if(sc.selected_by_default === true) {
-                        form.value.spendSubCategory = parseInt(sc.id) 
+                        form.value.spendSubCategory = parseInt(sc.id)
                         form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part1', 'id', sc.id)
                         form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part2', 'id', sc.id)
                     }
@@ -68,6 +71,7 @@
             }
         }
         if(form.value.currentSubCategories) {
+            resetSubCategories()
             form.value.currentSubCategories = filtredSubCat
         }
         form.value.currentSubCategories ? scDisabled.value = false : scDisabled.value = true
@@ -236,7 +240,7 @@
                     :disabled="scDisabled"
                     @change="onChangeSubCategorySelector"
                 >
-                <option value="" selected disabled>Sous-catégories</option>
+                <option value="title" selected disabled>Sous-catégories</option>
                     <option 
                         v-for= "subCategory in form.currentSubCategories" :key="subCategory.id"
                         :value="subCategory.id"

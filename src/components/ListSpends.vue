@@ -5,7 +5,8 @@
     import { 
         gObjectParameter1ByParameter2,
         addNewOption,
-        handleSpendAmount
+        handleSpendAmount,
+        resetSubCategories
     } from '../store/functions.js'
     
     const store = useStore()
@@ -72,14 +73,16 @@
     })
 
     function handleSelectedSpend(item, subCategories) {
+        const subCategoryId = 'subcategory-selector'
         const category = document.getElementById('category-selector')
-        const subCategory = document.getElementById('subcategory-selector');
+        const subCategory = document.getElementById(subCategoryId);
         const spendAmount = document.getElementById('spend-amount')
         const percentagePart1 = document.getElementById('percentage-part1')
         const percentagePart2 = document.getElementById('percentage-part2')
         subCategory.disabled = false
+        resetSubCategories()
         const activeSubCategories = subCategories.filter((sc) => sc.categories_id === item.categories_id)        
-        activeSubCategories.forEach((sc) => addNewOption(sc.id, sc.subcategory_label, sc.id, 'subcategory-selector'))
+        activeSubCategories.forEach((sc) => addNewOption(subCategoryId, sc.id, sc.subcategory_label, sc.id))
         category.value = item.categories_id
         subCategory.value = item.sub_categories_id
         spendAmount.value = item.total_amount

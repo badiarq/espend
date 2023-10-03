@@ -81,7 +81,7 @@ export function unHighlight(id) {
     }
 }
 
-export function addNewOption(optionId, optionText, optionValue, parentNodeId) {
+export function addNewOption(parentNodeId, optionId, optionText, optionValue) {
     const selectorDOM = document.getElementById(parentNodeId);
     const optionNode = document.getElementById(optionId)
     if(!optionNode) {
@@ -92,6 +92,26 @@ export function addNewOption(optionId, optionText, optionValue, parentNodeId) {
         newOption.setAttribute('value', optionValue)
         selectorDOM.appendChild(newOption)
     }
+}
+
+export function removeChildren(parentNodeId) {
+    const selectorDOM = document.getElementById(parentNodeId);        
+    let child = selectorDOM.lastElementChild; 
+    while (child) {
+        selectorDOM.removeChild(child);
+        child = selectorDOM.lastElementChild;
+    }
+}
+
+export function resetSubCategories() {
+    const SelectorId = 'subcategory-selector'
+    const subCategoryTitle = 'subcategory-title'
+    const selectorDOM = document.getElementById(SelectorId)
+    removeChildren(SelectorId)
+    addNewOption(SelectorId, subCategoryTitle, 'Choisissez une sous-catégorie',subCategoryTitle)
+    const subCategoryDOM = document.getElementById(subCategoryTitle)
+    subCategoryDOM.disabled = true
+    selectorDOM.insertBefore(subCategoryDOM, selectorDOM.firstChild);
 }
 
 export function handleSpendAmount(spendAmount, percentagePart1, percentagePart2) {
