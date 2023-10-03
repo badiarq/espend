@@ -3,7 +3,6 @@
     import { useStore } from 'vuex'
     import axios from 'axios'
     import { convertToValidPercentage, 
-        convertToValidAmount, 
         gObjectParameter1ByParameter2,
         gTodayDate,
         highlight,
@@ -80,33 +79,14 @@
     }
 
     function onChangeSubCategorySelector() {
-        form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part1', 'id',form.value.spendSubCategory)
-        // let selectedSubCategory = db.value.subCategories.find(subCategory => {
-        //     return subCategory.id == form.value.spendSubCategory
-        // })
-        // form.value.percentagePart1 = selectedSubCategory.percentage_part1
-        
+        form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part1', 'id',form.value.spendSubCategory)        
         form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.subCategories, 'percentage_part2', 'id',form.value.spendSubCategory)
-        handleSpendAmount(
-        form.value.spendAmount, 
-        form.value.amountPart1, 
-        form.value.amountPart2, 
-        form.value.percentagePart1, 
-        form.value.percentagePart2
-    )
+        setHandleSpendAmount(form.value.spendAmount, form.value.percentagePart1, form.value.percentagePart2)
     }
 
-    // calculate part amounts from total and percentages
-    // function handleSpendAmount() {
-    //     unHighlight('spend-amount')
-    //     const getSpendAmout = form.value.spendAmount
-    //     form.value.spendAmount = convertToValidAmount(getSpendAmout)
-    //     form.value.amountPart1 = form.value.spendAmount * form.value.percentagePart1 / 100
-    //     form.value.amountPart2 = form.value.spendAmount * form.value.percentagePart2 / 100
-    // }
-
-    function setHandleSpendAmount(spendAmout, percetagePart1, percetagePart2) {
-      const { amountPart1, amountPart2 } = handleSpendAmount(spendAmout, percetagePart1, percetagePart2)
+    function setHandleSpendAmount(spendAmount, percetagePart1, percetagePart2) {
+      const { newSpendAmount, amountPart1, amountPart2 } = handleSpendAmount(spendAmount, percetagePart1, percetagePart2)
+      form.value.spendAmount = newSpendAmount
       form.value.amountPart1 = amountPart1
       form.value.amountPart2 = amountPart2
     }
@@ -279,7 +259,7 @@
                         id="spend-amount"   
                         v-model="form.spendAmount"
                         class="bg-white rounded-md border border-gray-300 px-4 py-2 text-sm"
-                        @change="setHandleSpendAmount(form.spendAmount, form.percentagePart1, form.percentagePart2)"
+                        @input="setHandleSpendAmount(form.spendAmount, form.percentagePart1, form.percentagePart2)"
                         @click="form.spendAmount = null"
                     >
                     <span class="bg-gray-200 rounded-md border border-gray-300 px-4 py-2 text-sm ml-3">€</span>

@@ -72,23 +72,32 @@
     })
 
     function handleSelectedSpend(item, subCategories) {
-        document.getElementById('category-selector').value = item.categories_id
-        document.getElementById('subcategory-selector').disabled = false
+        const category = document.getElementById('category-selector')
+        const subCategory = document.getElementById('subcategory-selector');
+        const spendAmount = document.getElementById('spend-amount')
+        const percentagePart1 = document.getElementById('percentage-part1')
+        const percentagePart2 = document.getElementById('percentage-part2')
+        subCategory.disabled = false
         const activeSubCategories = subCategories.filter((sc) => sc.categories_id === item.categories_id)        
-        activeSubCategories.forEach((subCategory) => addNewOption(subCategory.id, subCategory.subcategory_label, subCategory.id, 'subcategory-selector'))
-        const select = document.getElementById('subcategory-selector');
-        select.value = item.sub_categories_id
-        document.getElementById('spend-amount').value = item.total_amount
-        document.getElementById('percentage-part1').value = item.part1_percentage
-        document.getElementById('percentage-part2').value = item.part2_percentage
-        //handleSpendAmount()
+        activeSubCategories.forEach((sc) => addNewOption(sc.id, sc.subcategory_label, sc.id, 'subcategory-selector'))
+        category.value = item.categories_id
+        subCategory.value = item.sub_categories_id
+        spendAmount.value = item.total_amount
+        percentagePart1.value = item.part1_percentage
+        percentagePart2.value = item.part2_percentage
+        setHandleSpendAmount(
+            spendAmount.value, 
+            percentagePart1.value, 
+            percentagePart2.value
+        )
         return false;
     }
 
-    function setHandleSpendAmount(spendAmout, percetagePart1, percetagePart2) {
-      const { amountPart1, amountPart2 } = handleSpendAmount(spendAmout, percetagePart1, percetagePart2)
-      form.value.amountPart1 = amountPart1
-      form.value.amountPart2 = amountPart2
+    function setHandleSpendAmount(spendAmount, percetagePart1, percetagePart2) {
+      const { newSpendAmount, amountPart1, amountPart2 } = handleSpendAmount(spendAmount, percetagePart1, percetagePart2)
+      document.getElementById('spend-amount').value = newSpendAmount
+      document.getElementById('amount-part1').value = amountPart1
+      document.getElementById('amount-part2').value = amountPart2
     }
 
     onMounted(async() => {
