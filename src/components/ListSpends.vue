@@ -6,7 +6,8 @@
         gObjectParameter1ByParameter2,
         addNewOption,
         handleSpendAmount,
-        resetSubCategories
+        resetSubCategories,
+        gData
     } from '../store/functions.js'
     
     const store = useStore()

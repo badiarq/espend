@@ -1,4 +1,16 @@
 import axios from 'axios'
+let lang = 'fr'
+let content = {}
+content = await getTable('https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/content')
+
+// Function of getting content
+function data(name) {
+    return gData(content, name)
+}
+
+export function gData(database, name) {
+    return gObjectParameter1ByParameter2(database, lang, 'code', name) 
+}
 
 export async function getTable(originUrl) {
     try {
@@ -108,7 +120,7 @@ export function resetSubCategories() {
     const subCategoryTitle = 'subcategory-title'
     const selectorDOM = document.getElementById(SelectorId)
     removeChildren(SelectorId)
-    addNewOption(SelectorId, subCategoryTitle, 'Choisissez une sous-catégorie',subCategoryTitle)
+    addNewOption(SelectorId, subCategoryTitle, data('choose_subcategory'),subCategoryTitle)
     const subCategoryDOM = document.getElementById(subCategoryTitle)
     subCategoryDOM.disabled = true
     selectorDOM.insertBefore(subCategoryDOM, selectorDOM.firstChild);

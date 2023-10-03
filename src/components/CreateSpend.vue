@@ -9,14 +9,21 @@
         unHighlight,
         getTable,
         handleSpendAmount,
-        resetSubCategories
+        resetSubCategories,
+        gData
     } from '../store/functions.js'
+
+    // Function of getting content
+    function data(name) {
+        return gData(content, name)
+    }
 
     // Global variables
     const store = useStore()
     const scDisabled = ref(true)
     // Global Form
     const form = ref({
+
         spendCategory: 0,
         spendSubCategory: 0,
         spendAmount: 0,
@@ -36,6 +43,7 @@
         categories: [],
         subCategories: []
     })
+    let content = {}
 
     // Store list of participants
     function storeParticipants() {
@@ -59,7 +67,6 @@
             let sc = db.value.subCategories[i];
             for (let i = 0; i < db.value.categories.length; i++) {
                 const cat = db.value.categories[i];
-                resetSubCategories()
                 if(sc.categories_id === cat.id && sc.categories_id === form.value.spendCategory) {
                     filtredSubCat.push(sc)
                     if(sc.selected_by_default === true) {
@@ -191,7 +198,10 @@
         })
     }
 
+
+
     onMounted(async() => {
+        content = await store.state.api.content
         db.value.categories = await getTable(store.state.api.categoriesTable)
         db.value.subCategories = await getTable(store.state.api.subCategoriesTable)
         db.value.participants = await getTable(store.state.api.participantsTable)
@@ -209,7 +219,8 @@
                     for="category-selector"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Catégorie
+                    {{ data('category') }}
+                    
                 </label>
                 <select 
                     id="category-selector" 
@@ -217,7 +228,7 @@
                     v-model="form.spendCategory"
                     @change="onChangeCategorySelector"
                 >
-                    <option value="" selected disabled>Selectionnez une catégorie</option>
+                    <option value="" selected disabled> {{ data('choose_category') }}</option>
                     <option 
                         v-for="category in db.categories" :key="category.id"
                         :value="category.id" 
@@ -231,7 +242,7 @@
                     for="category-selector"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Sous-catégorie
+                    {{ data('subcategory') }}
                 </label>
                 <select 
                     id="subcategory-selector" 
@@ -240,7 +251,7 @@
                     :disabled="scDisabled"
                     @change="onChangeSubCategorySelector"
                 >
-                <option value="title" selected disabled>Sous-catégories</option>
+                <option value="title" selected disabled> {{ data('choose_subcategory') }}</option>
                     <option 
                         v-for= "subCategory in form.currentSubCategories" :key="subCategory.id"
                         :value="subCategory.id"
