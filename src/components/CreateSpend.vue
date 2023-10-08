@@ -400,15 +400,15 @@
                     >
                     Description
                 </label>
-                <textarea 
+                <input
+                    type="text"
                     name="spend-description" 
                     id="spend-description" 
-                    cols="30" 
-                    rows="3" 
                     class="col-span-2"
+                    maxlength="50"
                     v-model="form.description"
                     @input="handleDescription"
-                ></textarea>
+                >
             </div>
             <div class="w-full col-span-2 flex flex-row justify-end">
                 <div 
