@@ -24,8 +24,8 @@
 
 <template>
     <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">{{ data('last_spends') }}</h3>
-        <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+        <h3 class="text-base md:text-xl font-bold leading-none text-gray-900 dark:text-white">{{ data('last_spends') }}</h3>
+        <a href="#" class="text-xs md:text-sm text-end font-medium text-blue-600 hover:underline dark:text-blue-500">
             {{ data('all_spends') }}
         </a>
     </div>

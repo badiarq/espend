@@ -117,18 +117,18 @@
         <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
             <li v-for="(item, index) in sortedSpendTable.slice(0, 10)" 
                 :key="index" 
-                class="py-3 sm:py-4"
+                class="py-3 md:py-4"
             >
                 <a href="#" class="flex flex-row justify-between" @click="handleSelectedSpend(item, db.subCategories)">
                     <div>
-                        <p class="text-md font-medium text-gray-900 truncate dark:text-white">
+                        <p class="text-sm md:text-base font-medium text-gray-900 truncate dark:text-white">
                             {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
                         </p>
-                        <p class="text-md text-gray-500 truncate dark:text-gray-400">
+                        <p class="text-sm md:text-base text-gray-500 truncate dark:text-gray-400">
                             {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
                         </p>
                     </div>
-                    <div class="flex items-end text-base font-semibold text-gray-900 dark:text-white">
+                    <div class="flex items-end text-sm md:text-base font-semibold text-gray-900 dark:text-white">
                         {{ item.total_amount }} €
                     </div>
                 </a>
