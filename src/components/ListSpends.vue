@@ -130,45 +130,25 @@
 
                 <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
 
-
-                <li v-for="(item, index) in sortedSpendTable.slice(0, 10)" 
-                    :key="index" 
-                    class="py-3 sm:py-4"
-                >
-                    <a href="#" class="flex flex-row justify-between" @click="handleSelectedSpend(item, db.subCategories)">
-                        <div>
-                            <p class="text-md font-medium text-gray-900 truncate dark:text-white">
-                                {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
-                            </p>
-                            <p class="text-md text-gray-500 truncate dark:text-gray-400">
-                                {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
-                            </p>
-                        </div>
-                        <div class="flex items-end text-base font-semibold text-gray-900 dark:text-white">
-                            {{ item.total_amount }} €
-                        </div>
-                    </a>
-                </li>
-
-
-                <!-- <li class="py-3 sm:py-4">
-                        <div class="flex items-center space-x-4">
-                            <div class="flex-shrink-0">
-                                <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-1.jpg" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                    Neil Sims
+                    <li v-for="(item, index) in sortedSpendTable.slice(0, 10)" 
+                        :key="index" 
+                        class="py-3 sm:py-4"
+                    >
+                        <a href="#" class="flex flex-row justify-between" @click="handleSelectedSpend(item, db.subCategories)">
+                            <div>
+                                <p class="text-md font-medium text-gray-900 truncate dark:text-white">
+                                    {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
                                 </p>
-                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                    email@windster.com
+                                <p class="text-md text-gray-500 truncate dark:text-gray-400">
+                                    {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
                                 </p>
                             </div>
-                            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                $320
+                            <div class="flex items-end text-base font-semibold text-gray-900 dark:text-white">
+                                {{ item.total_amount }} €
                             </div>
-                        </div>
-                    </li> -->
+                        </a>
+                    </li>
+
                 </ul>
             </div>
         </div>
