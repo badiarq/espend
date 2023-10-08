@@ -1,5 +1,5 @@
 <script setup>
-import SearchBar from '@/components/SearchBar.vue';
+import SearchBar from '@/layout/SearchBar.vue';
     // Get Content
         import { ref, onMounted } from 'vue'
         import { useStore } from 'vuex'
@@ -30,7 +30,7 @@ import SearchBar from '@/components/SearchBar.vue';
     <SearchBar>
         <input 
             type="text"
-            class="appearance-none block h-8 bg-gray-200 text-gray-700 border border-gray-400 rounded py-3 leading-tight focus:outline-none focus:bg-white"
+            class="appearance-none block h-8 my-2 bg-gray-200 text-gray-700 border border-gray-400 rounded leading-tight focus:outline-none focus:bg-white"
             id="searching-bar"
             :placeholder= "data('search...')"
             @blur="handleSearchBar()"
