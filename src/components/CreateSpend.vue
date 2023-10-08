@@ -10,7 +10,8 @@
         getTable,
         handleSpendAmount,
         resetSubCategories,
-        gData
+        gData,
+        capitalCase
     } from '../store/functions.js'
 
     // Function of getting content
@@ -145,6 +146,7 @@
     const submitHandler = async () => {
         let formData = new FormData();
         const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
+        const descriptionCapitalized = capitalCase(form.value.description)
 
         if(!form.value.spendSubCategory || !form.value.spendAmount || !participantId) {
             // 12 is the ID of the category "Autres"
@@ -171,7 +173,6 @@
 
         formData.append('categories_id', form.value.spendCategory)
         formData.append('sub_categories_id', form.value.spendSubCategory)
-        console.log(typeof form.value.spendAmount)
         formData.append('total_amount', form.value.spendAmount)
         formData.append('spend_date', form.value.dateValue)
         formData.append('users_id', participantId)
@@ -179,7 +180,7 @@
         formData.append('part2_percentage', form.value.percentagePart2)
         formData.append('part1_amount', form.value.amountPart1)
         formData.append('part2_amount', form.value.amountPart2)
-        formData.append('description', form.value.description)
+        formData.append('description', descriptionCapitalized)
 
         axios
         .post(store.state.api.spendsTable, formData) 
@@ -265,7 +266,7 @@
                     for="grid-first-name"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Montant
+                    {{ data('amount') }}
                 </label>
                 <div class="flex flex-row">
                     <input 
@@ -285,7 +286,7 @@
                     for="grid-first-name"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Date
+                    {{ data('date') }}
                 </label>
                 <input 
                     type="date" 
@@ -300,7 +301,7 @@
                     for="participant"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Payé par
+                    {{ data('paid_by') }}
                 </label>
                 <select 
                     id="participant" 
@@ -321,7 +322,7 @@
                     for="amount-part1"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Part 1 - 
+                    {{ data('part') }} 1 - 
                     {{ gObjectParameter1ByParameter2(
                         db.participants, 
                         'name', 
@@ -359,7 +360,7 @@
                     for="amount-part2"
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
                     >
-                    Part 2 - 
+                    {{ data('part') }} 2 - 
                     {{ gObjectParameter1ByParameter2(
                         db.participants, 
                         'name', 
@@ -393,21 +394,23 @@
                 </div>
             </div>
             <div class="col-span-2">
-                <label 
-                    for="spend-description"
-                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
-                    >
-                    Description
-                </label>
-                <textarea 
+                <span>
+                    <label 
+                        for="spend-description"
+                        class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-0 md:mb-2"
+                        >
+                        {{ data('description') }}  ( {{ data('50_characters') }} )
+                    </label>
+                </span>
+                <input
+                    type="text"
                     name="spend-description" 
-                    id="spend-description" 
-                    cols="30" 
-                    rows="3" 
+                    id="spend-description"
                     class="col-span-2"
+                    maxlength="50"
                     v-model="form.description"
                     @input="handleDescription"
-                ></textarea>
+                >
             </div>
             <div class="w-full col-span-2 flex flex-row justify-end">
                 <div 
@@ -421,7 +424,7 @@
                     class="btn bg-primary-middle"
                     @click="submitHandler"
                     >
-                    Enregistrer 
+                    {{ data('save_spend') }}
                 </button>
             </div>
         </div> 
