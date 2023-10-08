@@ -212,7 +212,7 @@
 </script>
 
 <template>
-    <form @submit.prevent="newSpend" class="w-full bg-white p-6 rounded-xl">
+    <form @submit.prevent="newSpend" class="w-full bg-white p-6 rounded-md border shadow-md">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
             <div class="col-span-2 md:col-span-1">
                 <label 

@@ -1,13 +1,13 @@
 <script setup>
 import CreateSpend from '@/components/CreateSpend.vue'
-import ListSpends from '@/components/ListSpends.vue'
+import LastSpendsModule from '../components/LastSpendsModule.vue';
 </script>
 
 <template>
     <main class="container py-8">
         <CreateSpend />
         <div class="my-2"></div>
-        <ListSpends />
+        <LastSpendsModule />
     </main>
 </template>
 
