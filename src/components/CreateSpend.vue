@@ -10,7 +10,8 @@
         getTable,
         handleSpendAmount,
         resetSubCategories,
-        gData
+        gData,
+        capitalCase
     } from '../store/functions.js'
 
     // Function of getting content
@@ -145,6 +146,7 @@
     const submitHandler = async () => {
         let formData = new FormData();
         const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
+        const descriptionCapitalized = capitalCase(form.value.description)
 
         if(!form.value.spendSubCategory || !form.value.spendAmount || !participantId) {
             // 12 is the ID of the category "Autres"
@@ -171,7 +173,6 @@
 
         formData.append('categories_id', form.value.spendCategory)
         formData.append('sub_categories_id', form.value.spendSubCategory)
-        console.log(typeof form.value.spendAmount)
         formData.append('total_amount', form.value.spendAmount)
         formData.append('spend_date', form.value.dateValue)
         formData.append('users_id', participantId)
@@ -179,7 +180,7 @@
         formData.append('part2_percentage', form.value.percentagePart2)
         formData.append('part1_amount', form.value.amountPart1)
         formData.append('part2_amount', form.value.amountPart2)
-        formData.append('description', form.value.description)
+        formData.append('description', descriptionCapitalized)
 
         axios
         .post(store.state.api.spendsTable, formData) 

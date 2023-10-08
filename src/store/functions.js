@@ -134,3 +134,23 @@ export function handleSpendAmount(spendAmount, percentagePart1, percentagePart2)
     const amountPart2 = newSpendAmount * percentagePart2 / 100
     return { newSpendAmount, amountPart1, amountPart2 }
 }
+
+function addSpaceAfterPeriod(text) {
+    const newText = text.replace(/(\.)([^ ])/g, '$1 $2');
+    return newText;
+}
+
+export function capitalCase(text) {
+    const newText = addSpaceAfterPeriod(text)
+    const sentences = newText.split('. ');
+    console.log(sentences);
+    const formattedSentences = [];
+    for (const sentence of sentences) {
+      if (sentence.length > 0) {
+        const formattedSentence = sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
+        formattedSentences.push(formattedSentence);
+      }
+    }
+    const formattedText = formattedSentences.join('. ');
+    return formattedText;
+}
