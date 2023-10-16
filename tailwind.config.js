@@ -12,7 +12,8 @@ export default {
         screens: {
             'sm': '320px',
             'md': '540px',
-            'lg' : '640px'
+            'lg' : '640px',
+            'xl' : '1024px'
         },
         fontFamily: {
             sans: ['Mulish', 'sans-serif'],
