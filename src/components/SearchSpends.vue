@@ -1,5 +1,5 @@
 <script setup>
-import SearchBar from '@/layout/SearchBar.vue';
+    import SearchBar from '@/layout/SearchBar.vue';
     // Get Content
         import { ref, onMounted } from 'vue'
         import { useStore } from 'vuex'
