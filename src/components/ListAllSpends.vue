@@ -8,7 +8,8 @@
     const db = ref({
         spends: [],
         categories: [],
-        subCategories: []
+        subCategories: [],
+        participants: []
     })
 
     // Get Spends Data
@@ -19,6 +20,15 @@
         } catch (e) {
             console.log(e)
         }
+    }
+    // Get Participants
+    const gParticipants = async() => {
+    try {
+        const response = await axios.get(store.state.api.participantsTable)
+        db.value.participants = response.data
+    } catch (e) {
+        console.log(e)
+    }
     }
     // Get Categories and subCategories
         const gCategories = async() => {
@@ -47,6 +57,7 @@
         await gSpends()
         await gCategories()
         await gSubCategories()
+        await gParticipants()
     })
 </script>
 
@@ -69,7 +80,7 @@
                                 {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
                             </p>
                             <div class="flex flex-raw text-xs md:text-base text-gray-500">
-                                <p>Pagado por: {{ item.users_id }}</p>
+                                <p>Pagado por: {{ gObjectParameter1ByParameter2(db.participants,'name', 'id', item.users_id) }}</p>
                             </div>
                         </div>
                     </div>
@@ -83,9 +94,13 @@
                     </div>
                 </a>
                 <div class="amount-repartition flex flex-raw justify-end">
-                    <span class="text-[11px] md:text-[13px] flex justify-end text-primary-middle">Part 1 ({{ item.part1_percentage }}%)  : {{ item.part1_amount }}€</span>
+                    <span class="text-[11px] md:text-[13px] flex justify-end text-primary-middle">
+                        {{ gObjectParameter1ByParameter2(db.participants,'part_reference', 'id', 1) }} ({{ item.part1_percentage }}%) : {{ item.part1_amount }}€
+                    </span>
                     <span class="text-[11px] md:text-[13px]">&nbsp&nbsp-&nbsp&nbsp</span>
-                    <span class="text-[11px] md:text-[13px] flex justify-end text-secondary-dark">Part 2 ({{ item.part1_percentage }}%) : {{ item.part2_amount }}€</span>
+                    <span class="text-[11px] md:text-[13px] flex justify-end text-secondary-dark">
+                        {{ gObjectParameter1ByParameter2(db.participants,'part_reference', 'id', 2) }} ({{ item.part2_percentage }}%) : {{ item.part2_amount }}€
+                    </span>
                 </div>
             </li>
         </ul>
