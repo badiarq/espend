@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <main class="container px-4 py-2 my-4 rounded-md bg-gray-100">
+    <main class="container py-2 my-2 rounded-md bg-gray-100">
         <ListAllSpends />
     </main>
 </template>
