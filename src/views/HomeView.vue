@@ -1,7 +1,7 @@
 <script setup>
 import CreateSpend from '@/components/CreateSpend.vue'
 import LastSpendsModule from '@/components/LastSpendsModule.vue';
-import TabBar from '../components/TabBar.vue';
+import TabBar from '@/components/TabBar.vue';
 </script>
 
 <template>

@@ -2,6 +2,7 @@
     // Get Content
     import { ref, onMounted } from 'vue'
         import { useStore } from 'vuex'
+        import router from '@/router';
         import {
             gData
         } from '@/store/functions.js'
@@ -23,10 +24,18 @@
 </script>
 
 <template>
-    <div class="flex justify-between items-center mb-4">
-        <h3 class="text-base md:text-xl font-bold leading-none text-gray-900 dark:text-white">{{ data('last_spends') }}</h3>
-        <a href="#" class="text-xs md:text-sm text-end font-medium text-blue-600 hover:underline dark:text-blue-500">
-            {{ data('all_spends') }}
+    <div class="flex justify-between items-center mb-2">
+        <h3 
+            class="text-base md:text-xl font-bold leading-none text-gray-900 dark:text-white"
+            >
+                {{ data('last_spends') }}
+            </h3>
+        <a 
+            href="#" 
+            class="text-xs md:text-sm text-end font-medium text-blue-600 hover:underline dark:text-blue-500"
+            @click="router.push('/view-all-spends')"
+            >
+                {{ data('all_spends') }}
         </a>
     </div>
 </template>
