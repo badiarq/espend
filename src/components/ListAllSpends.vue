@@ -75,8 +75,8 @@
                                 {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
                             </p>
                         </div>
-                        <div class="flex flex-raw">
-                            <p class="w-28 mr-2 text-xs md:text-base text-gray-500 truncate dark:text-gray-400 flex items-center">
+                        <div class="flex flex-raw justify-between">
+                            <p class="mr-2 text-xs md:text-base text-gray-500 truncate dark:text-gray-400 flex items-center">
                                 {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
                             </p>
                             <div class="flex flex-raw text-xs md:text-base text-gray-500">
@@ -84,12 +84,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-1/4 flex flex-col justify-around">
-                        <div class="flex justify-end text-base md:text-[18px] font-semibold text-gray-900 dark:text-white">
-                            {{ item.total_amount }} €
-                        </div>
+                    <div class="w-1/4 flex flex-col justify-between">
                         <div>
                             <p class="text-xs md:text-[14px] text-gray-500 flex justify-end">{{ item.spend_date }}</p>
+                        </div>
+                        <div class="flex justify-end text-[14px] md:text-[18px] font-semibold text-gray-900 dark:text-white">
+                            {{ item.total_amount }} €
                         </div>
                     </div>
                 </a>
