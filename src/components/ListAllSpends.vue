@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref, onMounted } from 'vue'
+    import { ref, onMounted } from 'vue'
     import { useStore } from 'vuex' // Import useStore from 'vuex'
     import axios from 'axios'
     import { gObjectParameter1ByParameter2, groupByParameter, gData } from '../store/functions.js'
@@ -55,11 +55,6 @@
             console.log(e)
         }
     }
-
-    const sortedSpendTable = computed(() => {
-        // Sort the spendTable by the 'date' parameter in descending order (most recent first)
-        return db.value.spends.slice().sort((a, b) => new Date(b.spend_date) - new Date(a.spend_date))
-    })
 
     onMounted(async() => {
         form.value.content = await store.state.api.content

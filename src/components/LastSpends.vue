@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref, onMounted } from 'vue'
+    import { ref, onMounted } from 'vue'
     import { useStore } from 'vuex' // Import useStore from 'vuex'
     import axios from 'axios'
     import { 
@@ -8,7 +8,7 @@
         handleSpendAmount,
         resetSubCategories,
         gData,
-        groupByParameter
+        reducedObjectListByCategory
     } from '../store/functions.js'
 
     const store = useStore()
@@ -77,11 +77,6 @@
         }
     }
 
-    const sortedSpendTable = computed(() => {
-        // Sort the spendTable by the 'date' parameter in descending order (most recent first)
-        return db.value.spends.slice().sort((a, b) => new Date(b.spend_date) - new Date(a.spend_date))
-    })
-
     function handleSelectedSpend(item, subCategories) {
         const subCategoryId = 'subcategory-selector'
         const category = document.getElementById('category-selector')
@@ -113,26 +108,6 @@
       document.getElementById('amount-part2').value = amountPart2
     }
 
-    function reducedObjectListByCategory(data, category, numberOfElements) {
-        const groupedData = groupByParameter(data, category)
-        return reducedObjectList(groupedData, numberOfElements)
-    }
-
-    function reducedObjectList(data, numberOfElements) {
-        const reducedObjectList = {};
-        let counter = 0;
-        for (const key in data) {
-            if (counter < numberOfElements) {
-                reducedObjectList[key] = data[key];
-                counter++;
-            } else {
-                return reducedObjectList
-                break;
-            }
-        }
-        return reducedObjectList
-    }
-
     onMounted(async() => {
         form.value.content = await store.state.api.content
         await gSpends()
@@ -141,31 +116,6 @@
         await gParticipants()
     })
 </script>
-
-<!-- <template>
-    <div class="flow-root">
-        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
-            <li v-for="(item, index) in sortedSpendTable.slice(0, 10)" 
-                :key="index" 
-                class="py-3 md:py-4"
-            >
-                <a href="#" class="flex flex-row justify-between" @click="handleSelectedSpend(item, db.subCategories)">
-                    <div>
-                        <p class="text-sm md:text-base font-medium text-gray-900 truncate dark:text-white">
-                            {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
-                        </p>
-                        <p class="text-sm md:text-base text-gray-500 truncate dark:text-gray-400">
-                            {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
-                        </p>
-                    </div>
-                    <div class="flex items-end text-sm md:text-base font-semibold text-gray-900 dark:text-white">
-                        {{ item.total_amount }} €
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</template> -->
 
 <template>
     <div class="flow-root">
