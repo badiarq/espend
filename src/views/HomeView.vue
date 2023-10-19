@@ -5,7 +5,7 @@ import TabBar from '@/components/TabBar.vue';
 </script>
 
 <template>
-    <main class="container py-8">
+    <main class="container py-2">
         <TabBar />
         <div class="my-2"></div>        
         <CreateSpend />

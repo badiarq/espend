@@ -221,7 +221,7 @@
                     </div>
                 </li>
             </div>
-            <div class="my-2 bg-gray-200"></div>  
+            <div class="mb-2"></div>  
         </ul>
     </div>
 </template>

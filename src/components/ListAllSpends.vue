@@ -85,43 +85,45 @@
                     :key="index" 
                     class="p-2 mx-1 "
                 >
-                    <a href="#" class="spend-container justify-between flex flex-row">
-                        <div class="w-3/4">
-                            <div class="flex flex-raw">
-                                <p class="w-56 mr-2 text-[16px] md:text-[18px] font-medium text-primary-dark truncate dark:text-white">
-                                    {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
-                                </p>
+                    <a href="#">
+                        <div class="spend-container justify-between flex flex-row">
+                            <div class="w-3/4">
+                                <div class="flex flex-raw">
+                                    <p class="w-56 mr-2 text-[16px] md:text-[18px] font-medium text-primary-dark truncate dark:text-white">
+                                        {{ gObjectParameter1ByParameter2(db.categories,'category_label', 'id', item.categories_id) }}
+                                    </p>
+                                </div>
+                                <div class="flex flex-raw justify-between">
+                                    <p class="mr-2 text-xs md:text-base text-gray-500 truncate dark:text-gray-400 flex items-center">
+                                        {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
+                                    </p>
+                                    <div class="flex flex-raw text-xs md:text-base text-gray-500">
+                                        <p>{{ data('paid_by')}}: {{ gObjectParameter1ByParameter2(db.participants,'name', 'id', item.users_id) }}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex flex-raw justify-between">
-                                <p class="mr-2 text-xs md:text-base text-gray-500 truncate dark:text-gray-400 flex items-center">
-                                    {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
-                                </p>
-                                <div class="flex flex-raw text-xs md:text-base text-gray-500">
-                                    <p>{{ data('paid_by')}}: {{ gObjectParameter1ByParameter2(db.participants,'name', 'id', item.users_id) }}</p>
+                            <div class="w-1/4 flex flex-col justify-between">
+                                <div>
+                                    <p class="text-xs md:text-[14px] text-gray-500 flex justify-end">{{ item.spend_date }}</p>
+                                </div>
+                                <div class="flex justify-end text-[14px] md:text-[18px] font-semibold text-gray-900 dark:text-white">
+                                    {{ item.total_amount }} €
                                 </div>
                             </div>
                         </div>
-                        <div class="w-1/4 flex flex-col justify-between">
-                            <div>
-                                <p class="text-xs md:text-[14px] text-gray-500 flex justify-end">{{ item.spend_date }}</p>
-                            </div>
-                            <div class="flex justify-end text-[14px] md:text-[18px] font-semibold text-gray-900 dark:text-white">
-                                {{ item.total_amount }} €
-                            </div>
+                        <div class="amount-repartition flex flex-raw justify-end">
+                            <span class="text-[11px] md:text-[13px] flex justify-end text-primary-middle">
+                                {{ gObjectParameter1ByParameter2(db.participants,'part_reference', 'id', 1) }} ({{ item.part1_percentage }}%) : {{ item.part1_amount }}€
+                            </span>
+                            <span class="text-[11px] md:text-[13px]">&nbsp&nbsp-&nbsp&nbsp</span>
+                            <span class="text-[11px] md:text-[13px] flex justify-end text-secondary-dark">
+                                {{ gObjectParameter1ByParameter2(db.participants,'part_reference', 'id', 2) }} ({{ item.part2_percentage }}%) : {{ item.part2_amount }}€
+                            </span>
                         </div>
                     </a>
-                    <div class="amount-repartition flex flex-raw justify-end">
-                        <span class="text-[11px] md:text-[13px] flex justify-end text-primary-middle">
-                            {{ gObjectParameter1ByParameter2(db.participants,'part_reference', 'id', 1) }} ({{ item.part1_percentage }}%) : {{ item.part1_amount }}€
-                        </span>
-                        <span class="text-[11px] md:text-[13px]">&nbsp&nbsp-&nbsp&nbsp</span>
-                        <span class="text-[11px] md:text-[13px] flex justify-end text-secondary-dark">
-                            {{ gObjectParameter1ByParameter2(db.participants,'part_reference', 'id', 2) }} ({{ item.part2_percentage }}%) : {{ item.part2_amount }}€
-                        </span>
-                    </div>
                 </li>
             </div>
-            <div class="my-2 bg-gray-200"></div>  
+            <div class="mb-2"></div>  
         </ul>
     </div>
 </template>

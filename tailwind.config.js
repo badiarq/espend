@@ -10,9 +10,9 @@ export default {
             center: true,
         },
         screens: {
-            'sm': '320px',
+            'sm': '420px',
             'md': '540px',
-            'lg' : '640px',
+            'lg' : '780px',
             'xl' : '1024px'
         },
         fontFamily: {
