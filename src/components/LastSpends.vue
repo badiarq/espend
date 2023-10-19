@@ -42,7 +42,6 @@
         try {
             const response = await axios.get(store.state.api.spendsTable)
             db.value.spends = response.data
-            console.log('reduced', reducedListByCategory(db.value.spends, 'spend_date', 7))
         } catch (e) {
             console.log(e)
         }
@@ -114,18 +113,24 @@
       document.getElementById('amount-part2').value = amountPart2
     }
 
-    function reducedListByCategory(data, category, numberOfElements) {
-        console.log('data', data)
+    function reducedObjectListByCategory(data, category, numberOfElements) {
         const groupedData = groupByParameter(data, category)
-        console.log('groupdata', groupedData)
-        return reducedList(groupedData, numberOfElements)
-        
+        return reducedObjectList(groupedData, numberOfElements)
     }
 
-    function reducedList(arrayList, numberOfElements) {
-        console.log('arrayList', JSON.stringify(arrayList))
-        console.log('sliced', arrayList.slice(0, 7))
-        return arrayList.slice(0, numberOfElements)
+    function reducedObjectList(data, numberOfElements) {
+        const reducedObjectList = {};
+        let counter = 0;
+        for (const key in data) {
+            if (counter < numberOfElements) {
+                reducedObjectList[key] = data[key];
+                counter++;
+            } else {
+                return reducedObjectList
+                break;
+            }
+        }
+        return reducedObjectList
     }
 
     onMounted(async() => {
@@ -164,7 +169,7 @@
 
 <template>
     <div class="flow-root">
-        <ul v-for="(spend, index) in groupByParameter(db.spends, 'spend_date')"
+        <ul v-for="(spend, index) in reducedObjectListByCategory(db.spends, 'spend_date', 7)"
             v-bind:key="index"
             role="list" 
             class="divide-y divide-gray-200 dark:divide-gray-700 "   
