@@ -8,9 +8,10 @@
         handleSpendAmount,
         resetSubCategories,
         gData,
-        reducedObjectListByCategory
-    } from '../store/functions.js'
-    import { formatLongDate, formatShortDate } from '@/functions'
+        reducedObjectListByCategory,
+        formatLongDate, 
+        formatShortDate
+    } from '@/functions'
 
     const store = useStore()
     const db = ref({

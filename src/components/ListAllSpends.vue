@@ -2,8 +2,7 @@
     import { ref, onMounted } from 'vue'
     import { useStore } from 'vuex' // Import useStore from 'vuex'
     import axios from 'axios'
-    import { gObjectParameter1ByParameter2, groupByParameter, gData } from '../store/functions.js'
-    import { formatLongDate, formatShortDate } from '@/functions'
+    import { formatLongDate, formatShortDate, gObjectParameter1ByParameter2, groupByParameter, gData } from '@/functions'
 
     const store = useStore()
     const db = ref({
