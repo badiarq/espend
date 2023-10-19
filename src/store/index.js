@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
-import { getTable
-} from '../store/functions.js'
+import { 
+    getTable
+} from '@/functions'
 
 const store = createStore({
     state () {

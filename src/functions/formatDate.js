@@ -1,7 +1,7 @@
-import { getDays } from '@/store/functions'
+import { getDays } from '@/functions'
 
 export function formatLongDate(date) {
-    // const weekDays = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    // Load days in the current language
     const weekDays = getDays();
 
     // Analyse date

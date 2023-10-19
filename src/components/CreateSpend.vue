@@ -2,7 +2,7 @@
     import { ref, onMounted } from 'vue'
     import { useStore } from 'vuex'
     import axios from 'axios'
-    import { convertToValidPercentage, 
+    import { 
         gObjectParameter1ByParameter2,
         gTodayDate,
         highlight,
@@ -12,7 +12,7 @@
         resetSubCategories,
         gData,
         capitalCase
-    } from '../store/functions.js'
+    } from '@/functions'
 
     // Function of getting content
     function data(name) {

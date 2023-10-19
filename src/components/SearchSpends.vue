@@ -3,9 +3,9 @@
     // Get Content
         import { ref, onMounted } from 'vue'
         import { useStore } from 'vuex'
-        import {
+        import { 
             gData
-        } from '@/store/functions.js'
+        } from '@/functions'
         const store = useStore()
         const form = ref({
             content: {},
