@@ -6,9 +6,12 @@
 </script>
 
 <template>
-    <ListLayout>
-        <LastSpendsTitle />
-        <SearchSpends />
+    <div class="bg-gray-100 rounded-md shadow-md">
+        <ListLayout>
+            <LastSpendsTitle />
+            <SearchSpends />
+        </ListLayout>
+        <div class="h-2"></div>
         <LastSpends />
-    </ListLayout>
+    </div>
 </template>
