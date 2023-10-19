@@ -10,6 +10,7 @@
         gData,
         reducedObjectListByCategory
     } from '../store/functions.js'
+    import { formatLongDate, formatShortDate } from '@/functions'
 
     const store = useStore()
     const db = ref({
@@ -125,7 +126,7 @@
             class="divide-y divide-gray-200 dark:divide-gray-700 "   
         >
             <div>
-                <p class="text-[14px] ml-2 text-gray-500">{{ data('date')}} : {{ spend[0].spend_date }}</p>
+                <p class="text-[14px] ml-2 text-gray-500">{{ formatLongDate(spend[0].spend_date) }}</p>
             </div>
             <div class="date-spends bg-white">
                 <li v-for="(item, index) in spend"
@@ -153,7 +154,7 @@
                         </div>
                         <div class="w-1/4 flex flex-col justify-between">
                             <div>
-                                <p class="text-xs md:text-[14px] text-gray-500 flex justify-end">{{ item.spend_date }}</p>
+                                <p class="text-xs md:text-[14px] text-gray-500 flex justify-end">{{ formatShortDate(item.spend_date) }}</p>
                             </div>
                             <div class="flex justify-end text-[14px] md:text-[18px] font-semibold text-gray-900 dark:text-white">
                                 {{ item.total_amount }} €

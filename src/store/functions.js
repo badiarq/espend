@@ -186,3 +186,15 @@ function reducedObjectList(data, numberOfElements) {
     }
     return reducedObjectList
 }
+
+export function getDays() {
+    const days = [];
+    days.push(data('sunday'))
+    days.push(data('monday'))
+    days.push(data('tuesday'))
+    days.push(data('wednesday'))
+    days.push(data('thursday'))
+    days.push(data('friday'))
+    days.push(data('saturday'))
+    return days
+}
