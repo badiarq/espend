@@ -2,7 +2,7 @@
     import { computed, ref, onMounted } from 'vue'
     import { useStore } from 'vuex' // Import useStore from 'vuex'
     import axios from 'axios'
-    import { gObjectParameter1ByParameter2, groupByParameter } from '../store/functions.js'
+    import { gObjectParameter1ByParameter2, groupByParameter, gData } from '../store/functions.js'
 
     const store = useStore()
     const db = ref({
@@ -11,6 +11,14 @@
         subCategories: [],
         participants: []
     })
+
+    // Get Content
+    const form = ref({
+        content: {}
+    })
+    function data(name) {
+        return gData(form.value.content, name)
+    }
 
     // Get Spends Data
     const gSpends = async() => {
@@ -54,6 +62,7 @@
     })
 
     onMounted(async() => {
+        form.value.content = await store.state.api.content
         await gSpends()
         await gCategories()
         await gSubCategories()
@@ -63,12 +72,13 @@
 
 <template>
     <div class="flow-root">
-        <ul v-for="spend in groupByParameter(db.spends, 'spend_date')"
+        <ul v-for="(spend, index) in groupByParameter(db.spends, 'spend_date')"
+            v-bind:key="index"
             role="list" 
-            class="divide-y divide-gray-200 dark:divide-gray-700 "       
+            class="divide-y divide-gray-200 dark:divide-gray-700 "   
         >
             <div>
-                <p class="text-[14px] ml-2 text-gray-500">Date : {{ spend[0].spend_date }}</p>
+                <p class="text-[14px] ml-2 text-gray-500">{{ data('date')}} : {{ spend[0].spend_date }}</p>
             </div>
             <div class="date-spends bg-white">
                 <li v-for="(item, index) in spend"
@@ -87,7 +97,7 @@
                                     {{ gObjectParameter1ByParameter2(db.subCategories,'subcategory_label', 'id', item.sub_categories_id) }}
                                 </p>
                                 <div class="flex flex-raw text-xs md:text-base text-gray-500">
-                                    <p>Pagado por: {{ gObjectParameter1ByParameter2(db.participants,'name', 'id', item.users_id) }}</p>
+                                    <p>{{ data('paid_by')}}: {{ gObjectParameter1ByParameter2(db.participants,'name', 'id', item.users_id) }}</p>
                                 </div>
                             </div>
                         </div>
