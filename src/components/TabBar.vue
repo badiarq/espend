@@ -6,7 +6,7 @@
         import { ref, onMounted } from 'vue'
         import { useStore } from 'vuex'
         import { 
-            gData,
+            gData
         } from '@/functions'
         const store = useStore()
         const form = ref({

@@ -48,6 +48,7 @@
             console.log(e)
         }
     }
+
     // Get Categories and subCategories
         const gCategories = async() => {
         try {

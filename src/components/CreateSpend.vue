@@ -11,7 +11,8 @@
         handleSpendAmount,
         resetSubCategories,
         gData,
-        capitalCase
+        capitalCase,
+        isValueExist
     } from '@/functions'
 
     // Function of getting content
@@ -42,7 +43,8 @@
     const db = ref({
         participants: {},
         categories: [],
-        subCategories: []
+        subCategories: [],
+        spends: []
     })
     let content = {}
 
@@ -58,6 +60,16 @@
     const defaultPercentages = () => {
         form.value.percentagePart1 = gObjectParameter1ByParameter2(db.value.participants, 'default_percentage', 'part_reference', 'Part 1') 
         form.value.percentagePart2 = gObjectParameter1ByParameter2(db.value.participants, 'default_percentage', 'part_reference', 'Part 2') 
+    }
+    
+    // Get Spends Data
+    const gSpends = async() => {
+        try {
+            const response = await axios.get(store.state.api.spendsTable)
+            db.value.spends = response.data
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     function onChangeCategorySelector() {
@@ -145,6 +157,11 @@
     })
     const submitHandler = async () => {
         let formData = new FormData();
+
+        let spendReference = generateRefCode(9)
+        while ( isValueExist(db.value.spends, "reference", spendReference) ) {
+            spendReference = generateRefCode(9)
+        }
         const participantId = gObjectParameter1ByParameter2(db.value.participants, 'id', 'name', form.value.participantsNames)
         const descriptionCapitalized = capitalCase(form.value.description)
 
@@ -171,15 +188,16 @@
             return
         }
 
+        formData.append('reference', spendReference)
         formData.append('categories_id', form.value.spendCategory)
         formData.append('sub_categories_id', form.value.spendSubCategory)
         formData.append('total_amount', form.value.spendAmount)
-        formData.append('spend_date', form.value.dateValue)
-        formData.append('users_id', participantId)
-        formData.append('part1_percentage', form.value.percentagePart1)
-        formData.append('part2_percentage', form.value.percentagePart2)
         formData.append('part1_amount', form.value.amountPart1)
         formData.append('part2_amount', form.value.amountPart2)
+        formData.append('part1_percentage', form.value.percentagePart1)
+        formData.append('part2_percentage', form.value.percentagePart2)
+        formData.append('spend_date', form.value.dateValue)
+        formData.append('users_id', participantId)
         formData.append('description', descriptionCapitalized)
 
         axios
@@ -206,6 +224,7 @@
         db.value.categories = await getTable(store.state.api.categoriesTable)
         db.value.subCategories = await getTable(store.state.api.subCategoriesTable)
         db.value.participants = await getTable(store.state.api.participantsTable)
+        await gSpends()
         storeParticipants()
         defaultPercentages()
     })
