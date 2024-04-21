@@ -6,17 +6,17 @@ import {
 const store = createStore({
     state () {
         async function gData() {
-            const data = await getTable('https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/content')
+            const data = await getTable('https://cabinetarchitecture.com/api/content')
             return data
         }
 
         return {
             api: {
-                contentTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/content',
-                participantsTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/partipants',
-                categoriesTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/categories',
-                subCategoriesTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/sub_categories',
-                spendsTable: 'https://x8ki-letl-twmt.n7.xano.io/api:YGQ3vho5/spends',
+                contentTable: 'https://cabinetarchitecture.com/api/content',
+                participantsTable: 'https://cabinetarchitecture.com/api/participants',
+                categoriesTable: 'https://cabinetarchitecture.com/api/categories',
+                subCategoriesTable: 'https://cabinetarchitecture.com/api/sub_categories',
+                spendsTable: 'https://cabinetarchitecture.com/api/spends',
                 content: gData()
             }
         }
